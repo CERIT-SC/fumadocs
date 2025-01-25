@@ -65,6 +65,7 @@ const engines = new Map<EngineType, Engine>();
 function AIDialog({ type }: { type: EngineType }) {
   const [engine, setEngine] = useState(engines.get(type));
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, update] = useState(0);
   const shouldFocus = useRef(false); // should focus on input on next render
 

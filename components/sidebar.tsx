@@ -1,7 +1,7 @@
 'use client';
 import { CollapsibleContent } from 'fumadocs-ui/components/ui/collapsible';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
-import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger, SidebarFolderContent} from 'fumadocs-ui/layouts/docs/sidebar';
+import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger} from 'fumadocs-ui/layouts/docs/sidebar';
 import { twMerge as cn } from 'tailwind-merge';
 import { cva } from 'class-variance-authority';
 import Link, { type LinkProps } from 'fumadocs-core/link';
@@ -71,7 +71,6 @@ function SidebarItem({
 }
 
 function SidebarItemSingle({
-  icon,
   ...props
 }: LinkProps & {
   icon?: ReactNode;

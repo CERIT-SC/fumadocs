@@ -1,13 +1,15 @@
 // app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { ApiWithAuth } from "@/lib/auth";
+import type { MessageRecord } from '@/components/ai/search-ai'
 
 const openai = new OpenAI({
   apiKey: 'ollama',
   baseURL: 'http://ollama2.ollama-ns.svc.cluster.local:11434/v1',
 });
 
-export async function POST(request: NextRequest) {
+export const POST = ApiWithAuth(async (request: NextRequest) => {
   try {
     const { messages } = await request.json();
     
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest) {
           role: 'system',
           content: 'Format code blocks with appropriate language tags'
         },
-        ...messages.map((msg: any) => ({
+        ...messages.map((msg: MessageRecord) => ({
           role: msg.role,
           content: msg.content
         }))
@@ -51,7 +53,7 @@ export async function POST(request: NextRequest) {
         'Connection': 'keep-alive',
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err.name === 'AbortError') {
       return new Response(null, { status: 499 });
     }
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 export function OPTIONS() {
   return new Response(null, {

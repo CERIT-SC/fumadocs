@@ -19,7 +19,7 @@ export default function HomePage() {
           </ul>
         </Card>
         <Card title="Data Processing" icon={<Cpu />}>
-          <p>Focus on what's important, your research can be accelerated with our <b>big</b> servers.</p>
+          <p>Focus on what&apos;s important, your research can be accelerated with our <b>big</b> servers.</p>
         </Card>
         <Card title="Data Management & Storage" icon={<Database />}>
           <p>Need to store <b>terabytes</b> of data? No problem. Read what capabilities you have.</p>

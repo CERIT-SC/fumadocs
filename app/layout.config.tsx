@@ -1,5 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import Image from 'next/image';
+import Logo from '@/public/img/e-infra/logo.svg';
+import Banner from '@/public/img/ceritsc/banner.png';
 
 /**
  * Shared layout configurations
@@ -13,7 +15,7 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
      <>
-       <img src="/img/e-infra/logo.svg" width="50"/>
+       <Image src={Logo} alt="einfra logo" width="50" height="19"/>
        Documentation
      </>
     ),
@@ -28,8 +30,8 @@ export const baseOptions: BaseLayoutProps = {
           menu: {
             banner: (
                <div className="-mx-3 -mt-3">
-                <img
-                  src="/img/ceritsc/banner.png"
+                <Image
+                  src={Banner}
                   alt="Kubernetes"
                   width="1200"
                   height="710"
@@ -48,7 +50,8 @@ export const baseOptions: BaseLayoutProps = {
           url: '/docs/platform/overview',
         },
         {
-	  icon: <img src="/img/ceritsc/menu-logos/jupyter-logo.svg" className="h-10 p-0.5"/>,
+          // eslint-disable-next-line @next/next/no-img-element
+	  icon: <img src="/img/ceritsc/menu-logos/jupyter-logo.svg" alt="jupyter logo" className="h-10 p-0.5"/>,
           text: 'JupyterHub',
           description: 'Run Jupyter notebooks at powerful hardware.',
           url: '/docs/web-apps/jupyterhub',
@@ -57,7 +60,8 @@ export const baseOptions: BaseLayoutProps = {
           },
         },
         {
-          icon: <img src="/img/ceritsc/menu-logos/rancher-logo.svg" className="h-10 p-0.5"/>,
+          // eslint-disable-next-line @next/next/no-img-element
+          icon: <img src="/img/ceritsc/menu-logos/rancher-logo.svg" alt="rancher logo" className="h-10 p-0.5"/>,
           text: 'Rancher',
           description: 'Use Rancher UI to access Kubernetes cluster.',
           url: '/docs/rancher/rancher',
@@ -66,7 +70,8 @@ export const baseOptions: BaseLayoutProps = {
           },
         },
         {
-          icon: <img src="/img/ceritsc/menu-logos/foldify-logo.svg" className="h-10 p-0.5"/>,
+          // eslint-disable-next-line @next/next/no-img-element
+          icon: <img src="/img/ceritsc/menu-logos/foldify-logo.svg" alt="foldify logo" className="h-10 p-0.5"/>,
           text: 'Foldify',
           description: 'Use web UI for protein prediction.',
           url: '/docs/web-apps/foldify',
@@ -75,7 +80,8 @@ export const baseOptions: BaseLayoutProps = {
           },
         },
         {
-          icon: <img src="/img/ceritsc/menu-logos/kubernetes-logo.svg" className="h-10 p-0.5"/>,
+          // eslint-disable-next-line @next/next/no-img-element
+          icon: <img src="/img/ceritsc/menu-logos/kubernetes-logo.svg" alt="kubernetes logo" className="h-10 p-0.5"/>,
           text: 'Cheapest managed Kubernetes',
           description: 'Use Kubernetes API in fully managed K8s platform.',
           url: '/docs/platform/overview',
@@ -107,7 +113,4 @@ export const baseOptions: BaseLayoutProps = {
     }
   ],
   disableThemeSwitch: true,
-  sidebar: {
-    defaultOpenLevel: 1,
-  },
 };

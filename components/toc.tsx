@@ -1,7 +1,10 @@
+import Image from 'next/image';
+import Banner from '@/public/img/e-infra/header03.webp';
+
 export function TocFooter() {
    return (
      <div className="w-full flex justify-center">
-        <img src="/img/e-infra/header03.webp" width="160"/>
+        <Image src={Banner} alt="einfra banner" width="160" height="181"/>
      </div>
    );
 }

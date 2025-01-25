@@ -1,8 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { auth } from "../../../lib/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { ApiWithAuth } from "@/lib/auth";
 import { get_encoding } from 'tiktoken';
-const fs = require('fs');
+import fs from 'fs';
 
 const enc = get_encoding('cl100k_base');
 
@@ -55,18 +54,8 @@ const createContext = async (question: string, maxLen = 16384) => {
   return returns.join('\n\n###\n\n');
 };
 
-export async function POST(request: NextRequest) {
-  if (process.env.NEXT_PUBLIC_AUTHORITY_PROD) {
-     // Authentication check
-     const token = await getToken({ req: request });
-     if (!token) {
-        return NextResponse.json(
-          { message: "Login Required" },
-          { status: 401 }
-        );
-     }
-  }
-
+//export const POST = auth(async function POST(request: NextRequest) {
+export const POST = ApiWithAuth(async (request: NextRequest) => {
   try {
     const template = fs.readFileSync('./content/prompt-template.txt', 'utf8');
     const { prompt } = await request.json();
@@ -74,7 +63,7 @@ export async function POST(request: NextRequest) {
     const newPrompt = template
       .replace('${context}', context)
       .replace('${prompt}', prompt);
-    return NextResponse.json({ prompt: newPrompt });
+    return NextResponse.json({ prompt: newPrompt }, {status: 200});
   } catch (error) {
     console.error("Error processing request:", error);
     return NextResponse.json(
@@ -82,4 +71,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

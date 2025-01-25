@@ -1,4 +1,5 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
+import { NextRequest, NextResponse } from 'next/server';
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -21,4 +22,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         },
      }
   ]
-})
+});
+
+export const ApiWithAuth = (handler: (req: NextRequest) => Promise<NextResponse>) => {
+  return async (req: NextRequest) => {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json(
+        { message: "Login Required" },
+        { status: 401 }
+      );
+    }
+    return handler(req);
+  };
+};

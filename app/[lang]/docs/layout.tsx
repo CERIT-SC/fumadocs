@@ -12,7 +12,6 @@ import { auth } from "@/lib/auth";
 const docsOptions = {
   ...baseOptions,
   sidebar: {
-    ...baseOptions.sidebar,
     components: { Folder: Folder, Item: Item },
   },
 };
@@ -27,7 +26,7 @@ export default async function Layout({
   const checkAuth = process.env.NEXT_PUBLIC_AUTHORITY_PROD !== undefined;
   const session = checkAuth ? await auth() : true;
   return (
-    <DocsLayout {...docsOptions} tree={source.pageTree[(await params).lang]}>
+    <DocsLayout {...docsOptions} tree={source.pageTree[(await params).lang as keyof typeof source.pageTree]}>
       {children}
       <Trigger
         session={!!session}
