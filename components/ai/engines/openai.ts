@@ -1,9 +1,27 @@
 // Frontend: createOpenAIEngine.ts
 import type { Engine, MessageRecord } from '@/components/ai/search-ai';
 
-export async function createOpenAIEngine(): Promise<Engine> {
+export async function createOpenAIEngine(url: string): Promise<Engine> {
   let messages: MessageRecord[] = [];
   let currentAbortController: AbortController | null = null;
+
+  async function buildEnhancedPrompt(userPrompt: string): Promise<string> {
+    try {
+      const response = await fetch('/api/buildPrompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userPrompt }),
+      });
+
+      if (!response.ok) throw new Error('Prompt building failed');
+
+      const data = await response.json();
+      return data.prompt || userPrompt; // Fallback to original
+    } catch (error) {
+      console.error('Prompt enhancement failed:', error);
+      return userPrompt; // Return original if enhancement fails
+    }
+  }
 
   async function generateNew(
     onUpdate?: (full: string) => void,
@@ -19,10 +37,16 @@ export async function createOpenAIEngine(): Promise<Engine> {
     messages.push(assistantMessage);
 
     try {
-      const response = await fetch('/api/chat-openai', {
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ 
+		messages: messages.map(message => 
+                    ('context' in message && message.context !== null)
+                    ? { role: message.role, content: message.context }
+                    : message
+                )
+	      }),
         signal: controller.signal,
       });
 
@@ -65,7 +89,9 @@ export async function createOpenAIEngine(): Promise<Engine> {
 
   return {
     async prompt(text, onUpdate, onEnd) {
-      messages.push({ role: 'user', content: text });
+      const shouldEnhance = messages.length === 0;
+      const context = shouldEnhance ? await buildEnhancedPrompt(text) : null;
+      messages.push({ role: 'user', content: text, context: context });
       await generateNew(onUpdate, onEnd);
     },
 

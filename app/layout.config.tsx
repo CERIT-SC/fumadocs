@@ -29,7 +29,7 @@ export const baseOptions: BaseLayoutProps = {
             banner: (
                <div className="-mx-3 -mt-3">
                 <img
-                  src="/img/ceritsc/banner.jpeg"
+                  src="/img/ceritsc/banner.png"
                   alt="Kubernetes"
                   width="1200"
                   height="710"
@@ -48,7 +48,7 @@ export const baseOptions: BaseLayoutProps = {
           url: '/docs/platform/overview',
         },
         {
-	  icon: <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Jupyter_logo.svg" className="h-12"/>,
+	  icon: <img src="/img/ceritsc/menu-logos/jupyter-logo.svg" className="h-10 p-0.5"/>,
           text: 'JupyterHub',
           description: 'Run Jupyter notebooks at powerful hardware.',
           url: '/docs/web-apps/jupyterhub',
@@ -57,16 +57,16 @@ export const baseOptions: BaseLayoutProps = {
           },
         },
         {
-          icon: <img src="https://www.rancher.com/assets/img/logos/rancher-suse-logo-horizontal-color.svg" className="h-12"/>,
+          icon: <img src="/img/ceritsc/menu-logos/rancher-logo.svg" className="h-10 p-0.5"/>,
           text: 'Rancher',
-          description: 'User Rancher UI to access Kubernetes cluster.',
+          description: 'Use Rancher UI to access Kubernetes cluster.',
           url: '/docs/rancher/rancher',
           menu: {
             className: 'lg:col-start-2',
           },
         },
         {
-          icon: <img src="https://foldify.cloud.e-infra.cz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffoldify-logo.de502c5a.png&w=384&q=75" className="h-12"/>,
+          icon: <img src="/img/ceritsc/menu-logos/foldify-logo.svg" className="h-10 p-0.5"/>,
           text: 'Foldify',
           description: 'Use web UI for protein prediction.',
           url: '/docs/web-apps/foldify',
@@ -75,9 +75,9 @@ export const baseOptions: BaseLayoutProps = {
           },
         },
         {
-          icon: <img src="https://bizanosa.com/wp-content/uploads/2022/06/36-Cheapest-managed-Kubernetes-hosting-1024x576.png" className="h-12"/>,
-          text: 'Kubernetes API',
-          description: 'User Kubernetes API in fully managed K8s platform.',
+          icon: <img src="/img/ceritsc/menu-logos/kubernetes-logo.svg" className="h-10 p-0.5"/>,
+          text: 'Cheapest managed Kubernetes',
+          description: 'Use Kubernetes API in fully managed K8s platform.',
           url: '/docs/platform/overview',
           menu: {
             className: 'lg:col-start-3',

@@ -45,7 +45,7 @@ export interface Engine {
 export interface MessageRecord {
   role: 'user' | 'assistant';
   content: string;
-
+  context?: string; 
   suggestions?: string[];
   references?: MessageReference[];
 }
@@ -72,7 +72,21 @@ function AIDialog({ type }: { type: EngineType }) {
     void import('./markdown-processor');
     if (type === 'openai') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine());
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-openai'));
+        engines.set(type, instance);
+        setEngine(instance);
+      });
+    }
+    if (type === 'llama') {
+      void import('./engines/openai').then(async (res) => {
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-llama'));
+        engines.set(type, instance);
+        setEngine(instance);
+      });
+    }
+    if (type === 'deepseekr1') {
+      void import('./engines/openai').then(async (res) => {
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-deepseekr1'));
         engines.set(type, instance);
         setEngine(instance);
       });
@@ -311,8 +325,8 @@ let processor: Processor | undefined;
 const map = new Map<string, ReactNode>();
 
 const roleName: Record<string, string> = {
-  user: 'you',
-  assistant: 'fumadocs',
+  user: 'You',
+  assistant: 'AI Docs',
 };
 
 function Message({
