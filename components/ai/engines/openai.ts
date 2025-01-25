@@ -75,7 +75,7 @@ export async function createOpenAIEngine(url: string): Promise<Engine> {
 
       onEnd?.(content);
     } catch (err) {
-      if (err.name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         onEnd?.(assistantMessage.content);
       } else {
         assistantMessage.content = 'Error generating response';
@@ -90,7 +90,7 @@ export async function createOpenAIEngine(url: string): Promise<Engine> {
   return {
     async prompt(text, onUpdate, onEnd) {
       const shouldEnhance = messages.length === 0;
-      const context = shouldEnhance ? await buildEnhancedPrompt(text) : null;
+      const context = shouldEnhance ? await buildEnhancedPrompt(text) : undefined;
       messages.push({ role: 'user', content: text, context: context });
       await generateNew(onUpdate, onEnd);
     },

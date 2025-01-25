@@ -53,7 +53,7 @@ export const POST = ApiWithAuth(async (request: NextRequest) => {
       },
     });
   } catch (err: unknown) {
-    if (err.name === 'AbortError') {
+    if (err instanceof Error && err.name === 'AbortError') {
       return new Response(null, { status: 499 });
     }
     console.error('OpenAI API error:', err);

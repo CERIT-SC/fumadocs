@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react';
+import Link from 'fumadocs-core/link';
 import { twMerge as cn } from 'tailwind-merge';
 
 export function Cards3(

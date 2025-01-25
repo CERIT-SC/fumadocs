@@ -5,7 +5,7 @@ import { source } from '@/lib/source';
 import { Item, Folder } from '@/components/sidebar';
 import { Trigger } from '@/components/ai/search-ai';
 import { twMerge as cn } from 'tailwind-merge';
-import { buttonVariants } from 'fumadocs-ui/components/ui/button';
+import { buttonVariants } from '@/components/button';
 import { MessageCircle } from 'lucide-react';
 import { auth } from "@/lib/auth";
 

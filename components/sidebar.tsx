@@ -8,8 +8,18 @@ import Link, { type LinkProps } from 'fumadocs-core/link';
 import { ExternalLink } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { isActive } from '@/lib/is-active';
+import type { PageTree } from 'fumadocs-core/server';
+import type { ReactNode } from 'react';
 
-export function Folder({item, level, children}) {
+export function Folder({
+   item, 
+   level, 
+   children
+}:{
+  item: PageTree.Folder;
+  level: number;
+  children: ReactNode;
+}) {
   return (
     <SidebarFolder defaultOpen={1 >= level} >
       {item.index ? (
@@ -45,13 +55,15 @@ const itemVariants = cva(
 
 function SidebarItem({
   icon,
+  item,
   ...props
 }: LinkProps & {
   icon?: ReactNode;
+  item: PageTree.Item;
 }) {
   const pathname = usePathname();
   const active =
-    props.href !== undefined && isActive(props.href, pathname, false);
+    item.url !== undefined && isActive(item.url, pathname, false);
 
   return (
     <li className={`border-s ${active ? 'border-e-infra-blue' : ''}`}>
@@ -71,9 +83,11 @@ function SidebarItem({
 }
 
 function SidebarItemSingle({
+  item,
   ...props
 }: LinkProps & {
   icon?: ReactNode;
+  item: PageTree.Item;
 }) {
   const pathname = usePathname();
   const active =
@@ -85,21 +99,21 @@ function SidebarItemSingle({
       type="button"
       aria-label="Collapse Sidebar"
       data-collapsed={true}
-      {...props}
       className={cn(buttonVariants({
           color: 'ghost',
           size: 'icon',
         }), itemVariants({ active }), "p-2", props.className)}
      >
-     <a href={props.href}><strong>{props.item.name}</strong></a>
+     <a href={props.href}><strong>{item.name}</strong></a>
      </button>
      </div>
    )
 }
 
 
-export function Item({item}) {
-    const SBItem = item.icon == 'Single' ? SidebarItemSingle : SidebarItem;
+export function Item({item} : {item: PageTree.Item}) {
+    const icon = item.icon as unknown;
+    const SBItem = icon == 'Single' ? SidebarItemSingle : SidebarItem;
     return (
       <SBItem
          key={item.url}

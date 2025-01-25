@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Banner from '@/public/img/e-infra/header03.webp';
+import Banner from '@/public/img/e-infra/header03.png';
 
 export function TocFooter() {
    return (

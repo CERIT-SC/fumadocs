@@ -8,7 +8,7 @@ export const source = loader({
   baseUrl: '/docs',
   icon(icon) {
     if (icon)
-      return icon;
+      return icon as any;
   },
   source: createMDXSource(docs, meta),
 });
