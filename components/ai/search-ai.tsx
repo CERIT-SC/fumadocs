@@ -25,6 +25,7 @@ import { buttonVariants } from 'fumadocs-ui/components/ui/button';
 import type { Processor } from './markdown-processor';
 import Link from 'fumadocs-core/link';
 import { cva } from 'class-variance-authority';
+import { signIn } from "next-auth/react";
 
 export interface Engine {
   prompt: (
@@ -439,7 +440,10 @@ const typeButtonVariants = cva(
   },
 );
 
-export function Trigger(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+export function Trigger({
+  session,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { session?: boolean }) {
   const engines = [
     {
       label: 'OpenAI',
@@ -458,7 +462,15 @@ export function Trigger(props: ButtonHTMLAttributes<HTMLButtonElement>) {
 
   return (
      <Dialog>
-      <DialogTrigger {...props} />
+      <DialogTrigger {...props}
+        onClick={(e) => {
+          if (!session) {
+            e.preventDefault();
+            signIn("einfracz");
+          }
+          props.onClick?.(e);
+        }}
+      />
       <DialogPortal>
         <DialogOverlay className="fixed inset-0 z-50 bg-fd-background/50 backdrop-blur-sm data-[state=closed]:animate-fd-fade-out data-[state=open]:animate-fd-fade-in" />
         <DialogContent

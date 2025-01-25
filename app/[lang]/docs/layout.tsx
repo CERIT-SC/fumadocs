@@ -7,6 +7,7 @@ import { Trigger } from '@/components/ai/search-ai';
 import { twMerge as cn } from 'tailwind-merge';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
 import { MessageCircle } from 'lucide-react';
+import { auth } from "@/lib/auth";
 
 const docsOptions = {
   ...baseOptions,
@@ -23,10 +24,13 @@ export default async function Layout({
   params: Promise<{ lang: string }>;
   children: ReactNode;
 }) {
+  const checkAuth = process.env.NEXT_PUBLIC_AUTHORITY_PROD !== undefined;
+  const session = checkAuth ? await auth() : true;
   return (
     <DocsLayout {...docsOptions} tree={source.pageTree[(await params).lang]}>
       {children}
       <Trigger
+        session={!!session}
         className={cn(
           buttonVariants({
             variant: 'secondary',
@@ -36,7 +40,7 @@ export default async function Layout({
         )}
       >
         <MessageCircle className="size-4" />
-        Ask GPT AI
+        { session ? "Ask GPT AI" : "Sign in to Ask GPT AI" }
       </Trigger>
     </DocsLayout>
   );
