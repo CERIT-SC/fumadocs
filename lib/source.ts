@@ -8,6 +8,7 @@ export const source = loader({
   baseUrl: '/docs',
   icon(icon) {
     if (icon)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Inevitable
       return icon as any;
   },
   source: createMDXSource(docs, meta),
