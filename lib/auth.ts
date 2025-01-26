@@ -26,12 +26,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 export const ApiWithAuth = (handler: (req: NextRequest) => Promise<NextResponse|Response>) => {
   return async (req: NextRequest) => {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json(
-        { message: "Login Required" },
-        { status: 401 }
-      );
+    const checkAuth = process.env.NEXT_PUBLIC_AUTHORITY_PROD !== undefined;
+    if (checkAuth) {
+      const session = await auth();
+      if (!session) {
+        return NextResponse.json(
+          { message: "Login Required" },
+          { status: 401 }
+        );
+      }
     }
     return handler(req);
   };
