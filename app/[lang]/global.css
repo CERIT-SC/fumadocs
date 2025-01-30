@@ -1,4 +1,9 @@
 @tailwind base;
+@layer base {
+  html {
+    @apply font-sans;
+  }
+}
 @tailwind components;
 @tailwind utilities;
 
@@ -8,6 +13,24 @@
   font-style: normal;
   src: url('/fonts/FiraCode-VF.woff2') format('woff2-variations'),
     url('/fonts/FiraCode-VF.woff') format('woff-variations');
+}
+
+@font-face {
+  font-family: 'Inter var';
+  font-weight: 100 900;
+  font-display: block;
+  font-style: normal;
+  font-named-instance: 'Regular';
+  src: url('/fonts/InterVariable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter var';
+  font-weight: 100 900;
+  font-display: block;
+  font-style: italic;
+  font-named-instance: 'Italic';
+  src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
 }
 
 .font-mono {
@@ -22,7 +45,32 @@ body {
 }
 
 :root {
+   --fd-foreground: 215 25.0% 26.7%;
    --fd-primary: 189.6 68.9% 45%;
+}
+
+h1 {
+   color: rgb(15 23 42) !important;
+}
+
+h2 {
+   color: rgb(15 23 42) !important;
+}
+
+h3 {
+   color: rgb(15 23 42) !important;
+}
+
+h4 {
+   color: rgb(15 23 42) !important;
+}
+
+h5 {
+   color: rgb(15 23 42) !important;
+}
+
+h6 {
+   color: rgb(15 23 42) !important;
 }
 
 .prose :where(a:not([data-card])):not(:where([class~="not-prose"],[class~="not-prose"] *))  {
@@ -31,4 +79,76 @@ body {
 
 .border-e-infra-blue {
    border-color: hsl(189.6 68.9% 45) !important;
+}
+
+table {
+    width: 100%;
+    table-layout: auto;
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background: transparent !important;
+    border-width: 0px !important;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    unicode-bidi: isolate;
+    border-color: inherit;
+    text-align: left;
+    border-bottom-width: 1px;
+    border-bottom-color: #e2e8f0;
+    color: #334155;
+    background: transparent !important;
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    unicode-bidi: isolate;
+    border-color: inherit;
+    background: transparent !important;
+}
+
+th {
+    color: var(--tw-prose-headings);
+    font-weight: 600;
+    vertical-align: bottom;
+    padding-right: 0.5714286em;
+    padding-bottom: 0.5714286em;
+    padding-left: 0;
+    padding-top: 0;
+    background: transparent !important;
+    border-inline-start-width: 0px !important;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    unicode-bidi: isolate;
+    border-color: inherit;
+    border-bottom-width: 1px;
+    border-bottom-color: #e5e7eb;
+    table-layout: auto;
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background: transparent !important;
+}
+
+td {
+    display: table-cell;
+    vertical-align: baseline;
+    unicode-bidi: isolate;
+    padding-top: 0.5714286em;
+    padding-right: 0.5714286em;
+    padding-bottom: 0.5714286em;
+    padding-left: 0;
+    background: transparent !important;
+    border-inline-start-width: 0px !important;
 }

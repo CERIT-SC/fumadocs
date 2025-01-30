@@ -46,7 +46,7 @@ export interface Engine {
 export interface MessageRecord {
   role: 'user' | 'assistant';
   content: string;
-  context?: string; 
+  context?: string[]; 
   suggestions?: string[];
   references?: MessageReference[];
 }
@@ -74,21 +74,21 @@ function AIDialog({ type }: { type: EngineType }) {
     void import('./markdown-processor');
     if (type === 'openai') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-openai'));
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-openai', true));
         engines.set(type, instance);
         setEngine(instance);
       });
     }
     if (type === 'llama') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-llama'));
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-llama', true));
         engines.set(type, instance);
         setEngine(instance);
       });
     }
     if (type === 'deepseekr1') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-deepseekr1'));
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-deepseekr1', false));
         engines.set(type, instance);
         setEngine(instance);
       });
@@ -451,11 +451,11 @@ export function Trigger({
       value: 'openai',
     },
     { 
-      label: 'Local LLama', 
+      label: 'Local', 
       value: 'llama',
     },
     { 
-      label: 'Local Deepseek R1',
+      label: 'Problem Solving',
       value: 'deepseekr1',
     }
   ] as const;

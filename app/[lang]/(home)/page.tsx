@@ -11,7 +11,7 @@ export default function HomePage() {
       <Cards3 className="pt-4">
         <Card title="e-INFRA CZ Account" icon={<Fingerprint/>}>
           <p>Start by setting up your <b>e-INFRA CZ Account</b>, which will give you access to all services.</p>
-	  <ul className="pt-2">
+          <ul className="pt-2">
            <li><a href="https://docs.e-infra.cz/account/creation" className="text-fd-primary flex items-center gap-2"><MoveRight /> Account creation</a></li>
            <li><a href="https://docs.e-infra.cz/account/access" className="text-fd-primary flex items-center gap-2"><MoveRight /> Accessing your account and services</a></li>
            <li><a href="https://docs.e-infra.cz/account/management/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Account settings</a></li>
@@ -20,9 +20,22 @@ export default function HomePage() {
         </Card>
         <Card title="Data Processing" icon={<Cpu />}>
           <p>Focus on what&apos;s important, your research can be accelerated with our <b>big</b> servers.</p>
+          <ul className="pt-2">
+           <li><a href="https://docs.metacentrum.cz/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Batch computing (Metacentrum Grid)</a></li>
+           <li><a href="https://docs.e-infra.cz/compute/openstack/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Compute Cloud (Virtualization)</a></li>
+           <li><a href="https://docs.cerit.io/en/platform/overview" className="text-fd-primary flex items-center gap-2"><MoveRight /> Containers Cloud</a></li>
+           <li><a href="https://docs.it4i.cz/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Supercomputing</a></li>
+           <li><a href="https://www.cerit-sc.cz/infrastructure-services/sensitivecloud" className="text-fd-primary flex items-center gap-2"><MoveRight /> Sensitive data processing</a></li>
+          </ul>
         </Card>
-        <Card title="Data Management & Storage" icon={<Database />}>
+        <Card title="Data Storage & Repositories" icon={<Database />}>
           <p>Need to store <b>terabytes</b> of data? No problem. Read what capabilities you have.</p>
+          <ul className="pt-2">
+           <li><a href="https://docs.du.cesnet.cz/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Overview</a></li>
+           <li><a href="https://docs.du.cesnet.cz/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Synchronisation&Sharing</a></li>
+           <li><a href="https://docs.du.cesnet.cz/en/object-storage-s3/s3-service" className="text-fd-primary flex items-center gap-2"><MoveRight /> Object Storage</a></li>
+           <li><a href="https://docs.nrp.eosc.cz/" className="text-fd-primary flex items-center gap-2"><MoveRight /> Data Repositories</a></li>
+          </ul>
         </Card>
       </Cards3>
     </main>

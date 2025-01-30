@@ -1,11 +1,11 @@
 // Frontend: createOpenAIEngine.ts
 import type { Engine, MessageRecord } from '@/components/ai/search-ai';
 
-export async function createOpenAIEngine(url: string): Promise<Engine> {
+export async function createOpenAIEngine(url: string, embed: boolean): Promise<Engine> {
   let messages: MessageRecord[] = [];
   let currentAbortController: AbortController | null = null;
 
-  async function buildEnhancedPrompt(userPrompt: string): Promise<string> {
+  async function buildEnhancedPrompt(userPrompt: string): Promise<string[]> {
     try {
       const response = await fetch('/api/buildPrompt', {
         method: 'POST',
@@ -16,10 +16,10 @@ export async function createOpenAIEngine(url: string): Promise<Engine> {
       if (!response.ok) throw new Error('Prompt building failed');
 
       const data = await response.json();
-      return data.prompt || userPrompt; // Fallback to original
+      return data.prompt || [userPrompt]; // Fallback to original
     } catch (error) {
       console.error('Prompt enhancement failed:', error);
-      return userPrompt; // Return original if enhancement fails
+      return [userPrompt]; // Return original if enhancement fails
     }
   }
 
@@ -40,13 +40,26 @@ export async function createOpenAIEngine(url: string): Promise<Engine> {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-		messages: messages.map(message => 
-                    ('context' in message && message.context !== null)
-                    ? { role: message.role, content: message.context }
-                    : message
-                )
-	      }),
+        body: JSON.stringify({
+	       messages:  messages.map(message => {
+		       if ('context' in message && message.context !== null) {
+                         // Handle array contexts
+                         if (Array.isArray(message.context)) {
+                           return message.context.map(contextItem => ({
+                             role: message.role,
+                             content: contextItem
+                           }));
+                         }
+                         // Handle non-array context
+                         return {
+                           role: message.role,
+                           content: message.context
+                         };
+                       }
+                       // Return original message if no context or context is null
+                       return message;
+               }).flatMap((message) => message as MessageRecord)
+	}),
         signal: controller.signal,
       });
 
@@ -89,9 +102,12 @@ export async function createOpenAIEngine(url: string): Promise<Engine> {
 
   return {
     async prompt(text, onUpdate, onEnd) {
-      const shouldEnhance = messages.length === 0;
-      const context = shouldEnhance ? await buildEnhancedPrompt(text) : undefined;
-      messages.push({ role: 'user', content: text, context: context });
+      if ((messages.length === 0) && embed) {
+        const context = await buildEnhancedPrompt(text);
+	messages.push({ role: 'user', content: text, context: context });
+      } else {
+        messages.push({ role: 'user', content: text });
+      }
       await generateNew(onUpdate, onEnd);
     },
 

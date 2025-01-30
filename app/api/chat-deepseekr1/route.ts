@@ -2,24 +2,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { ApiWithAuth } from "@/lib/auth";
-import type { MessageRecord } from '@/components/ai/search-ai'
+import type { MessageRecord } from '@/components/ai/search-ai';
+import fs from 'fs';
 
 const openai = new OpenAI({
   apiKey: 'ollama',
-  baseURL: 'http://ollama2.ollama-ns.svc.cluster.local:11434/v1',
+  baseURL: process.env.DEEPSEEK_URL,
 });
 
 export const POST = ApiWithAuth(async (request: NextRequest) => {
   try {
     const { messages } = await request.json();
+    const template = fs.readFileSync('./content/ds-template.txt', 'utf8');
     
     const stream = await openai.chat.completions.create({
-      model: 'deepseek-r1:70b',
+      model: 'deepseek-r1:32b-qwen-distill-fp16',
       messages: [
         {
           role: 'system',
           content: 'Format code blocks with appropriate language tags'
         },
+	{
+	  role: 'system',
+	  content: template
+	},
         ...messages.map((msg: MessageRecord) => ({
           role: msg.role,
           content: msg.content

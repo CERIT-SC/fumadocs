@@ -7,7 +7,7 @@ import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import { type Components, toJsxRuntime } from 'hast-util-to-jsx-runtime';
 import { type ReactNode } from 'react';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
-import { createHighlighter } from 'shiki/bundle/web';
+import { createHighlighter } from 'shiki/bundle/full';
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import type { Root } from 'hast';
 
@@ -56,8 +56,9 @@ export function createProcessor(): Processor {
     return rehypeShikiFromHighlighter(highlighter, {
       defaultLanguage: 'text',
       defaultColor: false,
+      fallbackLanguage: 'plaintext',
       themes,
-      lazy: true,
+      lazy: false,
       parseMetaString(meta) {
         const map: Record<string, string> = {};
 

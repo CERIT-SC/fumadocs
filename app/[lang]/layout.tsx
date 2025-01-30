@@ -1,12 +1,7 @@
 import './global.css';
 import { RootProvider } from 'fumadocs-ui/provider';
-import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { I18nProvider } from 'fumadocs-ui/i18n';
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default async function Layout({ 
   params,
@@ -17,7 +12,7 @@ export default async function Layout({
 }) {
   const { lang } = await params;
   return (
-    <html lang={lang} className={inter.className} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <I18nProvider
           locale={lang}

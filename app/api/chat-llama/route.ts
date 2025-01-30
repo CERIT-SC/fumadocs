@@ -1,19 +1,18 @@
 // app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 import { ApiWithAuth } from "@/lib/auth";
-import type { MessageRecord } from '@/components/ai/search-ai'
+import type { MessageRecord } from '@/components/ai/search-ai';
+import { Ollama } from 'ollama';
 
-const openai = new OpenAI({
-  apiKey: 'ollama',
-  baseURL: process.env.LLAMA_URL,
+const ollama = new Ollama({
+  host: process.env.LLAMA_URL,
 });
 
 export const POST = ApiWithAuth(async (request: NextRequest) => {
   try {
     const { messages } = await request.json();
-    
-    const stream = await openai.chat.completions.create({
+     
+    const stream = await ollama.chat({
       model: 'llama3.3:latest',
       messages: [
         {
@@ -25,15 +24,16 @@ export const POST = ApiWithAuth(async (request: NextRequest) => {
           content: msg.content
         }))
       ],
+      options: { "num_ctx": 16384 },
       stream: true,
-    }, { signal: request.signal });
+    });
 
     const encoder = new TextEncoder();
     
     const readableStream = new ReadableStream({
       async start(controller) {
         for await (const chunk of stream) {
-          const content = chunk.choices[0]?.delta?.content || '';
+          const content = chunk.message?.content || '';
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({ content })}\n\n`)
           );
@@ -41,8 +41,7 @@ export const POST = ApiWithAuth(async (request: NextRequest) => {
         controller.close();
       },
       cancel() {
-        // Handle stream cancellation
-        stream.controller.abort();
+        // Ignore stream cancellation
       }
     });
 
@@ -57,7 +56,7 @@ export const POST = ApiWithAuth(async (request: NextRequest) => {
     if (err instanceof Error && err.name === 'AbortError') {
       return new Response(null, { status: 499 });
     }
-    console.error('OpenAI API error:', err);
+    console.error('Ollama API error:', err);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -15,6 +15,7 @@ const search = async (query: string) => {
       },
       body: JSON.stringify({
         query: query,
+	top_k: 4,
       }),
     }
   ).then((response) => response.json());
@@ -27,9 +28,10 @@ const createContext = async (question: string, maxLen = 16384) => {
   // get the similar data to our query from the database
   const searchResponse = await search(question);
   let curLen = 0;
+  let context = 1;
   const returns : string[] = [];
-  // return only top 2 similarities
-  let sims = 0;
+  const template = fs.readFileSync('./content/prompt-template.txt', 'utf8');
+  returns.push(template);
   for (const similarity of searchResponse['similarities']) {
     const sentence = similarity['data'];
     const metadata = similarity['metadata'];
@@ -44,26 +46,21 @@ const createContext = async (question: string, maxLen = 16384) => {
       console.log("Context too long, curLen:",curLen," nTokens: ", nTokens, " maxLen: ", maxLen);
       break;
     }
-    returns.push(`Source: [${title}](${path})\n\n${sentence}`);
-    sims++;
-    if (sims >= 2) {
-      break;
-    }
+    returns.push(`### Context ${context}\n\n  Source: [${title}](${path})\n\n${sentence}`);
+    context++;
   }
   // we join the entries we found with a separator to show it's different
-  return returns.join('\n\n###\n\n');
+  return returns;
 };
 
 //export const POST = auth(async function POST(request: NextRequest) {
 export const POST = ApiWithAuth(async (request: NextRequest) => {
   try {
-    const template = fs.readFileSync('./content/prompt-template.txt', 'utf8');
     const { prompt } = await request.json();
-    const context = await createContext(prompt);
-    const newPrompt = template
-      .replace('${context}', context)
-      .replace('${prompt}', prompt);
-    return NextResponse.json({ prompt: newPrompt }, {status: 200});
+    let context = await createContext(prompt);
+    context = [`Question: ${prompt}\n`].concat(context);
+    context.push("\n\n---\n\nAnswer:\n\n");
+    return NextResponse.json({ prompt: context }, {status: 200});
   } catch (error) {
     console.error("Error processing request:", error);
     return NextResponse.json(

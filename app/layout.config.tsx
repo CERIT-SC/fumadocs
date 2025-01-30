@@ -24,7 +24,7 @@ export const baseOptions: BaseLayoutProps = {
     {
       type: 'menu',
       text: 'CERIT-SC Kubernetes',
-      url: '/docs/platform/overview',
+      url: 'https://docs-ng.cerit.io/en/docs/platform/overview',
       items: [
         {
           menu: {
@@ -47,16 +47,16 @@ export const baseOptions: BaseLayoutProps = {
           },
           text: 'Getting Started',
           description: 'Learn to use Kubernetes and services for your science',
-          url: '/docs/platform/overview',
+          url: 'https://docs-ng.cerit.io/en/docs/platform/overview',
         },
         {
           // eslint-disable-next-line @next/next/no-img-element
 	  icon: <img src="/img/ceritsc/menu-logos/jupyter-logo.svg" alt="jupyter logo" className="h-10 p-0.5"/>,
           text: 'JupyterHub',
           description: 'Run Jupyter notebooks at powerful hardware.',
-          url: '/docs/web-apps/jupyterhub',
+          url: 'https://docs-ng.cerit.io/en/docs/web-apps/jupyterhub',
           menu: {
-            className: 'lg:col-start-2',
+            className: 'lg:col-start-3 lg:row-start-2',
           },
         },
         {
@@ -64,9 +64,9 @@ export const baseOptions: BaseLayoutProps = {
           icon: <img src="/img/ceritsc/menu-logos/rancher-logo.svg" alt="rancher logo" className="h-10 p-0.5"/>,
           text: 'Rancher',
           description: 'Use Rancher UI to access Kubernetes cluster.',
-          url: '/docs/rancher/rancher',
+          url: 'https://docs-ng.cerit.io/en/docs/rancher/rancher',
           menu: {
-            className: 'lg:col-start-2',
+            className: 'lg:col-start-2 lg:row-start-2',
           },
         },
         {
@@ -74,7 +74,7 @@ export const baseOptions: BaseLayoutProps = {
           icon: <img src="/img/ceritsc/menu-logos/foldify-logo.svg" alt="foldify logo" className="h-10 p-0.5"/>,
           text: 'Foldify',
           description: 'Use web UI for protein prediction.',
-          url: '/docs/web-apps/foldify',
+          url: 'https://docs-ng.cerit.io/en/docs/web-apps/foldify',
           menu: {
             className: 'lg:col-start-3 lg:row-start-1',
           },
@@ -84,16 +84,16 @@ export const baseOptions: BaseLayoutProps = {
           icon: <img src="/img/ceritsc/menu-logos/kubernetes-logo.svg" alt="kubernetes logo" className="h-10 p-0.5"/>,
           text: 'Cheapest managed Kubernetes',
           description: 'Use Kubernetes API in fully managed K8s platform.',
-          url: '/docs/platform/overview',
+          url: 'https://docs-ng.cerit.io/en/docs/platform/overview',
           menu: {
-            className: 'lg:col-start-3',
+            className: 'lg:col-start-2 lg:row-start-1',
           },
         },
       ], 
     },
     {
-      text: 'DU Cesnet',
-      url: 'https://docs.du.cesnet.cz',
+      text: 'DU CESNET',
+      url: 'https://docs.du.dyn.cloud.e-infra.cz/en/docs/introduction/introduction',
       active: 'nested-url',
     },
     {
