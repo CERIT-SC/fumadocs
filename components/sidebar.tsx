@@ -11,16 +11,16 @@ import { isActive } from '@/lib/is-active';
 import type { PageTree } from 'fumadocs-core/server';
 import type { ReactNode } from 'react';
 
-export function Folder({
-   item, 
-   level, 
+function InternFolder({
+   item,
+   level,
    children
 }:{
-  item: PageTree.Folder;
-  level: number;
-  children: ReactNode;
+   item: PageTree.Folder;
+   level: number;
+   children: ReactNode;
 }) {
-  return (
+   return (
     <SidebarFolder defaultOpen={1 >= level} >
       {item.index ? (
         <SidebarFolderLink href={item.index.url} external={item.index.external}>
@@ -37,6 +37,34 @@ export function Folder({
       <ul className="px-2">{children}</ul>
       </CollapsibleContent>
     </SidebarFolder>
+  );
+}
+
+export function Folder({
+   item, 
+   level, 
+   children
+}:{
+  item: PageTree.Folder;
+  level: number;
+  children: ReactNode;
+}) {
+  const nested = level > 1;
+  return (
+     <>
+     { nested ? ( <li className={'border-s'}>
+                  <div className="ms-2">
+                   <InternFolder item={item} level={level}>
+                      {children}
+                   </InternFolder>
+                  </div>
+                  </li>
+                ) : (
+                   <InternFolder item={item} level={level}>
+                      {children}
+                   </InternFolder>
+                )}
+     </>
   );
 }
 

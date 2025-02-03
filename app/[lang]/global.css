@@ -1,11 +1,14 @@
-@tailwind base;
+@import "tailwindcss";
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-twoslash/twoslash.css';
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
+
 @layer base {
   html {
     @apply font-sans;
   }
 }
-@tailwind components;
-@tailwind utilities;
 
 @font-face {
   font-family: 'Fira Code VF';
@@ -45,8 +48,8 @@ body {
 }
 
 :root {
-   --fd-foreground: 215 25.0% 26.7%;
-   --fd-primary: 189.6 68.9% 45%;
+   --color-fd-foreground: hsl(215 25.0% 26.7%);
+   --color-fd-primary: hsl(189.6 68.9% 45%);
 }
 
 h1 {

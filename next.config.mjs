@@ -13,6 +13,19 @@ const config = {
 
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: process.env.STARTPAGE,
+        permanent: true,
+      },
+    ];
+  },
+  devIndicators: {
+    appIsrStatus: false,
+    buildActivity: false,
+  },
 };
 
 export default withMDX(config);
