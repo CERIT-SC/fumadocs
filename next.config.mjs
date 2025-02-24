@@ -18,8 +18,13 @@ const config = {
       {
         source: '/',
         destination: process.env.STARTPAGE,
-        permanent: true,
+        permanent: false,
       },
+      {
+        source: '/en/platform/overview',
+        destination: process.env.STARTPAGE,
+        permanent: false,
+      }
     ];
   },
   devIndicators: {

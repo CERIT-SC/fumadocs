@@ -32,7 +32,7 @@ export async function createOpenAIEngine(url: string, embed: boolean): Promise<E
 
     const assistantMessage: MessageRecord = {
       role: 'assistant',
-      content: '',
+      content: 'Generating answer ...',
     };
     messages.push(assistantMessage);
 
@@ -55,6 +55,12 @@ export async function createOpenAIEngine(url: string, embed: boolean): Promise<E
                            role: message.role,
                            content: message.context
                          };
+                       }
+                       if (message.role === 'assistant' && message.content === 'Generating answer ...') {
+                          return {
+                            role: message.role,
+                            content: ''
+                          };
                        }
                        // Return original message if no context or context is null
                        return message;
@@ -81,6 +87,14 @@ export async function createOpenAIEngine(url: string, embed: boolean): Promise<E
         for (const line of lines) {
           const data = JSON.parse(line.slice(6));
           content += data.content;
+
+          if (content.startsWith('<think>') && (data.content.indexOf('</think>') !== -1)) {
+            const endIdx = content.indexOf('</think>');
+            if (endIdx !== -1) {
+              content = content.substring(endIdx + 8).trim();
+            }
+          }
+
           assistantMessage.content = content;
           onUpdate?.(content);
         }
@@ -103,8 +117,11 @@ export async function createOpenAIEngine(url: string, embed: boolean): Promise<E
   return {
     async prompt(text, onUpdate, onEnd) {
       if ((messages.length === 0) && embed) {
+	messages.push({ role: 'user', content: text});
+        messages.push({ role: 'assistant', content: "Searching documents ..."});
         const context = await buildEnhancedPrompt(text);
-	messages.push({ role: 'user', content: text, context: context });
+        messages.pop();
+        messages[0].context = context;
       } else {
         messages.push({ role: 'user', content: text });
       }

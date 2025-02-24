@@ -93,7 +93,7 @@ export const baseOptions: BaseLayoutProps = {
     },
     {
       text: 'DU CESNET',
-      url: 'https://docs.du.dyn.cloud.e-infra.cz/en/docs/introduction/introduction',
+      url: 'https://docs.du.cesnet.cz',
       active: 'nested-url',
     },
     {

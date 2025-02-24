@@ -225,7 +225,7 @@ function AIInput({
     >
       <Input
         value={message}
-        placeholder={loading ? 'AI is answering ...' : 'Ask GPT a question ...'}
+        placeholder={loading ? 'Jarvis is answering ...' : 'Ask GPT a question ...'}
         disabled={loading}
         onChange={(e) => {
           setMessage(e.target.value);
@@ -328,7 +328,7 @@ const map = new Map<string, ReactNode>();
 
 const roleName: Record<string, string> = {
   user: 'You',
-  assistant: 'AI Docs',
+  assistant: 'Jarvis',
 };
 
 function Message({
