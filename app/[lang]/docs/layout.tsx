@@ -23,7 +23,7 @@ export default async function Layout({
   params: Promise<{ lang: string }>;
   children: ReactNode;
 }) {
-  const checkAuth = process.env.NEXT_PUBLIC_AUTHORITY_PROD !== undefined;
+  const checkAuth = process.env.AUTHORITY_PROD !== undefined;
   const session = checkAuth ? await auth() : true;
   return (
     <DocsLayout {...docsOptions} tree={source.pageTree[(await params).lang as keyof typeof source.pageTree]}>

@@ -11,6 +11,7 @@ export default async function Layout({
   children: ReactNode;
 }) {
   const { lang } = await params;
+  const includeCzech = process.env.NEXT_PUBLIC_CZECH === 'true';
   return (
     <html lang={lang} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
@@ -21,10 +22,12 @@ export default async function Layout({
               name: 'English',
               locale: 'en',
             },
-            {
-              name: 'Česky',
-              locale: 'cz',
-            },
+            ...(includeCzech ? [
+              {
+                name: 'Česky',
+                locale: 'cz',
+              }
+            ] : [])
           ]}
           translations={
             {

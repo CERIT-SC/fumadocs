@@ -56,6 +56,8 @@ def main():
         # Determine language from filename
         filename = os.path.basename(meta_path)
         lang = "cz" if filename == "meta.cz.json" else "en"
+        if lang == "cz":
+           continue
         
         # Process the meta file and its hierarchy
         found_files = process_meta(base_dir, lang)

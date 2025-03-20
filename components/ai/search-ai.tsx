@@ -58,7 +58,7 @@ export interface MessageReference {
   url: string;
 }
 
-type EngineType = 'openai' | 'llama' | 'deepseekr1';
+type EngineType = 'openai' | 'local' | 'solver';
 
 const engines = new Map<EngineType, Engine>();
 
@@ -79,16 +79,16 @@ function AIDialog({ type }: { type: EngineType }) {
         setEngine(instance);
       });
     }
-    if (type === 'llama') {
+    if (type === 'local') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-llama', true));
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-local', true));
         engines.set(type, instance);
         setEngine(instance);
       });
     }
-    if (type === 'deepseekr1') {
+    if (type === 'solver') {
       void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-deepseekr1', false));
+        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-solver', false));
         engines.set(type, instance);
         setEngine(instance);
       });
@@ -446,20 +446,20 @@ export function Trigger({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { session?: boolean }) {
   const engines = [
-    {
-      label: 'OpenAI',
-      value: 'openai',
-    },
-    { 
-      label: 'Local', 
-      value: 'llama',
-    },
-    { 
-      label: 'Problem Solving',
-      value: 'deepseekr1',
-    }
+    ...(process.env.NEXT_PUBLIC_OPENAI_CHAT === 'true' ? [{
+        label: 'OpenAI',
+        value: 'openai' as EngineType,
+    }] : []),
+    ...(process.env.NEXT_PUBLIC_LOCAL_CHAT === 'true' ? [{
+        label: 'Local',
+        value: 'local' as EngineType,
+    }] : []),
+    ...(process.env.NEXT_PUBLIC_SOLVER_CHAT === 'true' ? [{
+        label: 'Problem Solving',
+        value: 'solver' as EngineType,
+    }] : []),
   ] as const;
-  const [type, setType] = useState<EngineType>(engines[0].value);
+  const [type, setType] = useState<EngineType>(engines[0]?.value ?? 'local');
 
   return (
      <Dialog>

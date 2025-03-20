@@ -7,12 +7,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         id: "einfracz",
         name: "e-INFRA CZ",
         type: "oidc",
-        wellKnown: process.env.NEXT_PUBLIC_AUTHORITY_PROD_CONFIG,
-	issuer: process.env.NEXT_PUBLIC_AUTHORITY_PROD,
+        wellKnown: process.env.AUTHORITY_PROD_CONFIG,
+	issuer: process.env.AUTHORITY_PROD,
         authorization: { params: { scope: "openid email profile" } },
         checks: ["pkce", "state"],
-        clientId: process.env.NEXT_PUBLIC_CLIENT_ID_PROD,
-        clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET_PROD,
+        clientId: process.env.CLIENT_ID_PROD,
+        clientSecret: process.env.CLIENT_SECRET_PROD,
         profile(profile) {
            return {
                id: profile.sub,
@@ -26,7 +26,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
 export const ApiWithAuth = (handler: (req: NextRequest) => Promise<NextResponse|Response>) => {
   return async (req: NextRequest) => {
-    const checkAuth = process.env.NEXT_PUBLIC_AUTHORITY_PROD !== undefined;
+    const checkAuth = process.env.AUTHORITY_PROD !== undefined;
     if (checkAuth) {
       const session = await auth();
       if (!session) {

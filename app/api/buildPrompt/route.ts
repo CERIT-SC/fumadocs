@@ -30,7 +30,12 @@ const createContext = async (question: string, maxLen = 16384) => {
   let curLen = 0;
   let context = 1;
   const returns : string[] = [];
-  const template = fs.readFileSync('./content/prompt-template.txt', 'utf8');
+  const customTemplatePath = './content/prompt-template.txt';
+  const defaultTemplatePath = './content/prompt-template-default.txt';
+  const templatePath = fs.existsSync(customTemplatePath)
+                         ? customTemplatePath
+                         : defaultTemplatePath;
+  const template = fs.readFileSync(templatePath, 'utf8');
   returns.push(template);
   for (const similarity of searchResponse['similarities']) {
     const sentence = similarity['data'];
