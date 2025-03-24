@@ -4,10 +4,13 @@ import {
   type HTMLAttributes,
   type ReactNode,
   type TextareaHTMLAttributes,
+  type AnchorHTMLAttributes,
+  type FC,
   useCallback,
   useEffect,
   useRef,
   useState,
+  forwardRef
 } from 'react';
 import {
   Dialog,
@@ -23,10 +26,9 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { twMerge as cn } from 'tailwind-merge';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
 import type { Processor } from './markdown-processor';
-import Link from 'fumadocs-core/link';
+import Link, {type LinkProps} from 'fumadocs-core/link';
 import { cva } from 'class-variance-authority';
 import { signIn } from "next-auth/react";
-
 export interface Engine {
   prompt: (
     text: string,
@@ -62,7 +64,7 @@ type EngineType = 'openai' | 'local' | 'solver';
 
 const engines = new Map<EngineType, Engine>();
 
-function AIDialog({ type }: { type: EngineType }) {
+function AIDialog({ type, onCloseDialog }: { type: EngineType, onCloseDialog: () => void }) {
   const [engine, setEngine] = useState(engines.get(type));
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -172,7 +174,7 @@ function AIDialog({ type }: { type: EngineType }) {
     <>
       <List className={cn(messages.length === 0 && 'hidden')}>
         {messages.map((item, i) => (
-          <Message key={i} message={item} onSuggestionSelected={onSubmit}>
+          <Message key={i} message={item} onSuggestionSelected={onSubmit} onInternalLinkClicked={onCloseDialog} >
             {!loading && item.role === 'assistant' && i === messages.length - 1
               ? activeBar
               : null}
@@ -334,10 +336,12 @@ const roleName: Record<string, string> = {
 function Message({
   children,
   onSuggestionSelected,
+  onInternalLinkClicked,
   message,
 }: {
   message: MessageRecord;
   onSuggestionSelected: (suggestion: string) => void;
+  onInternalLinkClicked: () => void;
   children: ReactNode;
 }) {
   const { suggestions = [], references = [] } = message;
@@ -356,6 +360,7 @@ function Message({
         result = await processor
           .process(message.content, {
             ...defaultMdxComponents,
+            a: ((props) => <CustomLink onInternalLinkClick={() => onInternalLinkClicked()} {...props} /> ) as FC<AnchorHTMLAttributes<HTMLAnchorElement>>,
             img: undefined, // use JSX
           })
           .catch(() => undefined);
@@ -429,6 +434,45 @@ function Message({
   );
 }
 
+export interface CustomLinkProps
+  extends Pick<LinkProps, 'prefetch' | 'replace'>,
+    AnchorHTMLAttributes<HTMLAnchorElement> {
+
+  external?: boolean;
+  onInternalLinkClick?: () => void;
+}
+
+/**
+ * Wrapper for fumadocs link component to add onClick behavior when link is internal
+ */
+const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
+  (
+    {
+      href = '#',
+      external = !(
+        href.startsWith('/') ||
+        href.startsWith('#') ||
+        href.startsWith('.')
+      ),
+      onInternalLinkClick = () => {},
+      ...props
+    },
+    ref,
+  ) => {
+    const handleClick = () => {
+      if (!external) {
+        onInternalLinkClick();
+      }
+    };
+
+  return <Link href={href}
+               external={external}
+               onClick={handleClick}
+               ref={ref}
+               {...props} />
+  },
+);
+
 const typeButtonVariants = cva(
   'inline-flex items-center justify-center rounded-lg px-2 py-1 text-sm font-medium transition-colors duration-100',
   {
@@ -460,9 +504,10 @@ export function Trigger({
     }] : []),
   ] as const;
   const [type, setType] = useState<EngineType>(engines[0]?.value ?? 'local');
-
+  const [open, setOpen] = useState<boolean>(false);
+  
   return (
-     <Dialog>
+     <Dialog open={open} onOpenChange={setOpen} >
       <DialogTrigger {...props}
         onClick={(e) => {
           if (!session) {
@@ -513,7 +558,7 @@ export function Trigger({
               Ask questions from this documentation or try to paste and resolve errors you get.
             </p>
           </div>
-          <AIDialog type={type} />
+          <AIDialog type={type} onCloseDialog={() => setOpen(false)}/>
         </DialogContent>
       </DialogPortal>
     </Dialog>
