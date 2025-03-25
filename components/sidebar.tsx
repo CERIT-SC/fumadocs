@@ -1,7 +1,7 @@
 'use client';
 import { CollapsibleContent } from 'fumadocs-ui/components/ui/collapsible';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
-import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger} from 'fumadocs-ui/layouts/docs/sidebar';
+import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger} from 'fumadocs-ui/components/layout/sidebar';
 import { twMerge as cn } from 'tailwind-merge';
 import { cva } from 'class-variance-authority';
 import Link, { type LinkProps } from 'fumadocs-core/link';
