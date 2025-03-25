@@ -120,7 +120,7 @@ export async function createOpenAIEngine(url: string, embed: boolean): Promise<E
 	messages.push({ role: 'user', content: text});
         messages.push({ role: 'assistant', content: "Searching documents ..."});
         const context = await buildEnhancedPrompt(text);
-        onUpdate && onUpdate(''); // change 'searching documents' to 'generating answer'
+        onUpdate?.(''); // change 'searching documents' to 'generating answer'
         messages.pop();
         messages[0].context = context;
       } else {
