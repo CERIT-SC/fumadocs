@@ -373,7 +373,7 @@ function Message({
     };
 
     void run();
-  }, [message.content]);
+  }, [message.content, onInternalLinkClicked]);
 
   return (
     <div
@@ -472,6 +472,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
                {...props} />
   },
 );
+CustomLink.displayName = "FunctionLink"
 
 const typeButtonVariants = cva(
   'inline-flex items-center justify-center rounded-lg px-2 py-1 text-sm font-medium transition-colors duration-100',
@@ -505,6 +506,8 @@ export function Trigger({
   ] as const;
   const [type, setType] = useState<EngineType>(engines[0]?.value ?? 'local');
   const [open, setOpen] = useState<boolean>(false);
+
+  const closeDialog = useCallback(() => setOpen(false), [])
   
   return (
      <Dialog open={open} onOpenChange={setOpen} >
@@ -558,7 +561,7 @@ export function Trigger({
               Ask questions from this documentation or try to paste and resolve errors you get.
             </p>
           </div>
-          <AIDialog type={type} onCloseDialog={() => setOpen(false)}/>
+          <AIDialog type={type} onCloseDialog={closeDialog}/>
         </DialogContent>
       </DialogPortal>
     </Dialog>
