@@ -360,7 +360,6 @@ def main():
             if component in content:
                 # Replace the component with the script contents
                 content = content.replace(component, inline_text)
-                print(f"Fixed content: {content}")
 
         filename = file_path.split("/")[-1]
         lang_prefix = "cz" if ".cz.mdx" in filename else "en"
@@ -408,12 +407,12 @@ def main():
             embed_url = "https://embedbase-ol.dyn.cloud.e-infra.cz/v1/ceritsc-documentation"
 
         chunk_count = len(all_chunks)
-        #response = requests.post(
-        #    embed_url,
-        #    json={"documents": all_chunks},
-        #    headers={"Content-Type": "application/json"}
-        #)
-        #response.raise_for_status()
+        response = requests.post(
+            embed_url,
+            json={"documents": all_chunks},
+            headers={"Content-Type": "application/json"}
+        )
+        response.raise_for_status()
         print(f"Uploaded {chunk_count} chunks")
 
 if __name__ == "__main__":

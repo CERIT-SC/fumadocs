@@ -435,7 +435,7 @@ function Message({
 }
 
 export interface CustomLinkProps
-  extends Pick<LinkProps, 'prefetch' | 'replace'>,
+  extends Pick<LinkProps, 'prefetch'>,
     AnchorHTMLAttributes<HTMLAnchorElement> {
 
   external?: boolean;

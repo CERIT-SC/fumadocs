@@ -8,6 +8,7 @@ import {
 } from 'fumadocs-ui/page';
 import { notFound } from 'next/navigation';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
+import { Footer } from '@/components/footer';
 
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>;
@@ -19,7 +20,7 @@ export default async function Page(props: {
   const MDX = page.data.body;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}
+    <DocsPage toc={page.data.toc} full={page.data.full} footer={{enabled: true, component: <Footer/>,}}
            tableOfContent={{
              enabled: true,
              style: 'clerk',
