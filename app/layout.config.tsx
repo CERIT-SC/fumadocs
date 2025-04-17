@@ -1,6 +1,7 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import Image from 'next/image';
-import Logo from '@/public/img/e-infra/logo.svg';
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import Image from "next/image";
+import Logo from "@/public/img/e-infra/logo.svg";
+import Footer from "@/components/footer";
 
 /**
  * Shared layout configurations
@@ -13,13 +14,12 @@ export const baseOptions: BaseLayoutProps = {
   i18n: true,
   nav: {
     title: (
-     <>
-       <Image src={Logo} alt="einfra logo" width="50" height="19"/>
-       Documentation
-     </>
+      <>
+        <Image src={Logo} alt="einfra logo" width="50" height="19" />
+        Documentation
+      </>
     ),
   },
-  links: [
-  ],
+  links: [],
   disableThemeSwitch: true,
 };
