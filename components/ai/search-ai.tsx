@@ -472,6 +472,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
                {...props} />
   },
 );
+CustomLink.displayName = "FunctionLink"
 
 CustomLink.displayName = "FunctionLink";
 
