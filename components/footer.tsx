@@ -7,9 +7,9 @@ const Version = Date.now();
 
 const Footer: React.FC = () => {
   return (
-    <footer className="flex flex-col row items-center p-5 bg-gray-100 border-t border-gray-300 pt-10 pb-5">
-      <div className="container flex justify-between gap-5 items-center mb-8 max-w-[1100px]">
-        <div className="flex-1 px-2 justify-center">
+    <footer className="flex flex-col sm:mt-0 mt-12 items-center p-5 bg-gray-100 border-t border-gray-300 pt-10 pb-5">
+      <div className="container md:flex sm:flex-row  justify-between gap-5 items-center mb-8 max-w-[1100px]">
+        <div className="flex-1 px-2 sm:mt-8 justify-center">
           <h4 className="font-semibold mb-2">e-INFRA CZ</h4>
           <ul>
             <li>
@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
             </li>
           </ul>
         </div>
-        <div className="flex-1 px-2">
+        <div className="flex-1 sm:mt-0 mt-8 px-2">
           <h4 className="font-semibold mb-2">General information</h4>
           <ul>
             <RedirectListItem
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
             />
           </ul>
         </div>
-        <div className="flex-1 px-2 h-full">
+        <div className="flex-1 px-2 sm:mt-0 mt-8 h-full">
           <h4 className="font-semibold mb-2">e-INFRA CZ Support</h4>
           <ul>
             <li className="flex items-center gap-2">
@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <div className="container flex justify-center items-center gap-4 mt-8 max-w-[1100px] rounded-md bg-slate-100">
+      <div className="container md:flex sm:flex-row sm:mt-8 justify-center items-center gap-4 mt-8 max-w-[1100px] rounded-md bg-slate-100">
         <img
           src="/img/logos/footer-partner-logos.svg"
           alt="CESNET Logo"
@@ -73,8 +73,8 @@ const Footer: React.FC = () => {
         />
       </div>
       <hr className="mt-8 mb-4 border-t-2 border-gray-200 w-full" />
-      <div className="container flex justify-between items-center max-w-[1100px]">
-        <div className="flex items-center gap-1">
+      <div className="container md:flex sm:flex-row justify-center md:justify-between items-center max-w-[1100px]">
+        <div className="flex items-center justify-center md:justify-start gap-1">
           <p className="text-sm text-fd-muted-foreground">
             Copyright © 2025 e-INFRA CZ
           </p>
@@ -86,9 +86,11 @@ const Footer: React.FC = () => {
             Privacy Policy
           </Link>
         </div>
-        <p className="text-sm text-fd-muted-foreground">
-          Version: {new Date(Version).toLocaleDateString("cs-CS")}
-        </p>
+        <div className="flex items-center justify-center md:justify-end gap-1 pt-4 md:pt-0">
+          <p className="text-sm text-fd-muted-foreground">
+            Version: {new Date(Version).toLocaleDateString("cs-CS")}
+          </p>
+        </div>
       </div>
     </footer>
   );
