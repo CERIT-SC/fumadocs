@@ -7,24 +7,26 @@ const Version = Date.now();
 
 const Footer: React.FC = () => {
   return (
-    <footer className="flex flex-col sm:mt-0 mt-12 items-center p-5 bg-gray-100 border-t border-gray-300 pt-10 pb-5">
+    <footer className="flex flex-col mt-0 md:mt-12 items-center p-5 bg-gray-100 border-t border-gray-300 pb-5">
       <div className="container md:flex sm:flex-row  justify-between gap-5 items-center mb-8 max-w-[1100px]">
-        <div className="flex-1 px-2 sm:mt-8 justify-center">
-          <h4 className="font-semibold mb-2">e-INFRA CZ</h4>
+        <div className="flex-1 px-2 mt-8 justify-center">
+          <h4 className="font-semibold mb-3">e-INFRA CZ</h4>
           <ul>
             <li>
               <p className="text-sm text-fd-muted-foreground">
                 <span className="whitespace-nowrap">CERIT-SC</span>,{" "}
                 <span className="whitespace-nowrap">CESNET</span>, and{" "}
                 <span className="whitespace-nowrap">IT4Innovations</span> are
-                the three e-infrastructures that constitute the national{" "}
+                the three{" "}
+                <span className="whitespace-nowrap">e-infrastructures</span>{" "}
+                that constitute the national{" "}
                 <span className="whitespace-nowrap">e-INFRA CZ</span> research
                 infrastructure.
               </p>
             </li>
           </ul>
         </div>
-        <div className="flex-1 sm:mt-0 mt-8 px-2">
+        <div className="flex-1 mt-8 px-2">
           <h4 className="font-semibold mb-2">General information</h4>
           <ul>
             <RedirectListItem
@@ -41,7 +43,7 @@ const Footer: React.FC = () => {
             />
           </ul>
         </div>
-        <div className="flex-1 px-2 sm:mt-0 mt-8 h-full">
+        <div className="flex-1 px-2 mt-8 h-full">
           <h4 className="font-semibold mb-2">e-INFRA CZ Support</h4>
           <ul>
             <li className="flex items-center gap-2">
