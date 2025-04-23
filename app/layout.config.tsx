@@ -18,7 +18,7 @@ export const baseOptions: BaseLayoutProps = {
        Documentation
      </>
     ),
-    url: "https://docs-einfra-main.dyn.cloud.e-infra.cz/",
+    url: "https://docs.e-infra.cz/",
   },
   links: [
   ],
