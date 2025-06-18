@@ -13,6 +13,14 @@ const config = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:lang/docs/:path*.mdx',
+        destination: '/:lang/llms.mdx/:path*',
+      },
+    ];
+  },
   async redirects() {
     return [
       {

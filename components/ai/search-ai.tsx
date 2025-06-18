@@ -165,7 +165,7 @@ function AIDialog({ type, onCloseDialog }: { type: EngineType, onCloseDialog: ()
         )}
         onClick={onClear}
       >
-        Clear Messages
+        Ask Something Else
       </button>
     </div>
   );
@@ -559,7 +559,7 @@ export function Trigger({
               Answers from AI may be inaccurate, please verify the information.
             </p>
             <p className="mt-2 text-xs text-fd-muted-foreground">
-              Ask questions from this documentation or try to paste and resolve errors you get.
+              Ask a direct question or paste an error—only the first question searches the documentation; <b>for a new topic, use the button below.</b>
             </p>
           </div>
           <AIDialog type={type} onCloseDialog={closeDialog}/>
