@@ -80,6 +80,10 @@ h6 {
    color: hsl(189.6 68% 45%) !important;
 }
 
+.prose :where(strong):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    font-weight: 600 !important;
+}
+
 .border-e-infra-blue {
    border-color: hsl(189.6 68.9% 45) !important;
 }

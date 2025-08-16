@@ -29,6 +29,10 @@ import type { Processor } from './markdown-processor';
 import Link, {type LinkProps} from 'fumadocs-core/link';
 import { cva } from 'class-variance-authority';
 import { signIn } from "next-auth/react";
+import { AssistantHierarchy, Assistant, Category } from '@/types/assistant';
+import { createOpenAIEngine } from './engines/openai';
+import { createRunLLMEngine } from './engines/runllm';
+
 export interface Engine {
   prompt: (
     text: string,
@@ -60,43 +64,34 @@ export interface MessageReference {
   url: string;
 }
 
-type EngineType = 'openai' | 'local' | 'solver';
+export interface AIDialogProps {
+  assistant: Assistant;
+  onCloseDialog: () => void;
+}
 
-const engines = new Map<EngineType, Engine>();
+const engines = new Map<string, Engine | undefined>();
 
-function AIDialog({ type, onCloseDialog }: { type: EngineType, onCloseDialog: () => void }) {
-  const [engine, setEngine] = useState(engines.get(type));
+function AIDialog({assistant, onCloseDialog} : AIDialogProps) {
+  const [engine, setEngine] = useState(engines.get(assistant.id));
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, update] = useState(0);
   const shouldFocus = useRef(false); // should focus on input on next render
 
   useEffect(() => {
-    // preload processor
-    void import('./markdown-processor');
-    if (type === 'openai') {
-      void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-openai', true));
-        engines.set(type, instance);
-        setEngine(instance);
-      });
-    }
-    if (type === 'local') {
-      void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-local', true));
-        engines.set(type, instance);
-        setEngine(instance);
-      });
-    }
-    if (type === 'solver') {
-      void import('./engines/openai').then(async (res) => {
-        const instance = engines.get(type) ?? (await res.createOpenAIEngine('/api/chat-solver', false));
-        engines.set(type, instance);
-        setEngine(instance);
-      });
-    }
+   (async () => {
+      let instance: Engine | undefined;
+      if (assistant.engine === 'openai') {
+        instance = engines.get(assistant.id) ?? (await createOpenAIEngine(assistant.api_path, assistant.embed ?? false));
+      } else if (assistant.engine === 'runllm') {
+        const pipeline_id = parseInt(assistant.id.split('_')[1], 10);
+        instance = engines.get(assistant.id) ?? (await createRunLLMEngine(assistant.api_path, pipeline_id));
+      }
 
-  }, [type, engine]);
+      engines.set(assistant.id, instance);
+      setEngine(instance);
+    })()
+  }, [assistant])
 
   const onTry = useCallback(() => {
     if (!engine) return;
@@ -491,25 +486,47 @@ export function Trigger({
   session,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { session?: boolean }) {
-  const engines = [
-    ...(process.env.NEXT_PUBLIC_OPENAI_CHAT === 'true' ? [{
-        label: 'OpenAI',
-        value: 'openai' as EngineType,
-    }] : []),
-    ...(process.env.NEXT_PUBLIC_LOCAL_CHAT === 'true' ? [{
-        label: 'Local',
-        value: 'local' as EngineType,
-    }] : []),
-    ...(process.env.NEXT_PUBLIC_SOLVER_CHAT === 'true' ? [{
-        label: 'Problem Solving',
-        value: 'solver' as EngineType,
-    }] : []),
-  ] as const;
-  const [type, setType] = useState<EngineType>(engines[0]?.value ?? 'local');
   const [open, setOpen] = useState<boolean>(false);
 
+  const [activeItem, setActiveItem] = useState<Assistant | Category | null>(null);
+  const [activeAssistant, setActiveAssistant] = useState<Assistant | null>(null);
+  const [assistantHierarchy, setAssistantHierarchy] = useState<AssistantHierarchy | null>(null);
+
   const closeDialog = useCallback(() => setOpen(false), [])
-  
+
+  useEffect(() => {
+    // fetch assistant hierarchy
+    (async () => {
+      const response = await fetch('/api/assistants');
+      if (!response.ok) {
+        console.error('Failed to fetch assistants');
+        return;
+      }
+
+      const data: AssistantHierarchy | null = await response.json();
+      if (!data) {
+        console.error('No assistants found');
+        return;
+      }
+
+      setAssistantHierarchy(data);
+      if (data.length > 0) {
+        setActiveItem(data[0]);
+      }
+    })();
+  }, [])
+
+  useEffect(() => {
+    if (!activeItem) return;
+
+    if (activeItem.type === 'assistant') {
+      setActiveAssistant(activeItem);
+    } else if (activeItem.type === 'category') {
+      setActiveAssistant(activeItem.assistants[0] ?? null);
+    }
+
+  }, [activeItem]);
+
   return (
      <Dialog open={open} onOpenChange={setOpen} >
       <DialogTrigger {...props}
@@ -541,28 +558,52 @@ export function Trigger({
           </DialogClose>
           <div className="bg-fd-muted px-2.5 py-2">
             <div className="flex flex-row items-center">
-              {engines.map((item) => (
+              {assistantHierarchy && assistantHierarchy.map((item) => (
                 <button
-                  key={item.value}
+                  key={item.id}
                   className={cn(
-                    typeButtonVariants({ active: type === item.value }),
+                    typeButtonVariants({ active: item.id === activeItem?.id }),
                   )}
                   onClick={() => {
-                    setType(item.value);
+                    setActiveItem(item);
                   }}
                 >
-                  {item.label}
+                  {item.name}
                 </button>
               ))}
             </div>
+            {activeItem && activeItem.type === 'category' && (
+              <>
+                <p className="mt-2 mb-2 text-xs text-fd-muted-foreground">
+                  Pick a specialized AI model for your conversation:
+                </p>
+                <div className="flex flex-row items-center">
+                  {activeItem.assistants.map((assistant) => (
+                    <button
+                      key={assistant.id}
+                      className={cn(
+                        typeButtonVariants({ active: assistant.id === activeAssistant?.id }),
+                      )}
+                      onClick={() => {
+                        setActiveAssistant(assistant);
+                      }}
+                    >
+                      {assistant.name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             <p className="mt-2 text-xs text-fd-muted-foreground">
-              Answers from AI may be inaccurate, please verify the information.
-            </p>
-            <p className="mt-2 text-xs text-fd-muted-foreground">
-              Ask a direct question or paste an error—only the first question searches the documentation; <b>for a new topic, use the button below.</b>
+              {activeAssistant?.description ? (<span dangerouslySetInnerHTML={{ __html: activeAssistant.description }} /> ) : (
+              <span>
+                Answers from AI may be inaccurate, please verify the information.<br/>
+                Ask a direct question or paste an error—only the first question searches the documentation; <b>for a new topic, use the button below.</b>
+              </span>
+              )}
             </p>
           </div>
-          <AIDialog type={type} onCloseDialog={closeDialog}/>
+          {activeAssistant && <AIDialog assistant={activeAssistant} onCloseDialog={closeDialog} />}
         </DialogContent>
       </DialogPortal>
     </Dialog>

@@ -35,10 +35,6 @@ const config = {
       }
     ];
   },
-  devIndicators: {
-    appIsrStatus: false,
-    buildActivity: false,
-  },
 };
 
 export default withMDX(config);
