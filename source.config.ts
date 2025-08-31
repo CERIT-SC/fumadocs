@@ -19,13 +19,27 @@ import { remarkAutoTypeTable } from 'fumadocs-typescript';
 import { ElementContent } from 'hast';
 import remarkSmartypants from 'remark-smartypants';
 
-export const { docs, meta } = defineDocs({
-  dir: 'content/docs',
+export const docs = defineDocs({
+  docs: {
+    schema: frontmatterSchema.extend({
+      preview: z.string().optional(),
+      index: z.boolean().default(false),
+      /**
+       * API routes only
+       */
+      method: z.string().optional(),
+    }),
+  },
+  meta: {
+    schema: metaSchema.extend({
+      description: z.string().optional(),
+    }),
+  },
 });
 
 export default defineConfig({
-	lastModifiedTime: 'git',
-        mdxOptions: {
+  lastModifiedTime: 'git',
+  mdxOptions: {
     rehypeCodeOptions: {
       lazy: true,
       experimentalJSEngine: true,

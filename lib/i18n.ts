@@ -1,6 +1,8 @@
-import type { I18nConfig } from 'fumadocs-core/i18n';
+import { defineI18n } from 'fumadocs-core/i18n';
 
-export const i18n: I18nConfig = {
+const includeCzech = process.env.NEXT_PUBLIC_CZECH === 'true';
+
+export const i18n = defineI18n({
   defaultLanguage: 'en',
-  languages: ['en', 'cz'],
-};
+  languages: includeCzech ? ['en', 'cz'] : ['en'],
+});

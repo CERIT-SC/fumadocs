@@ -8,6 +8,7 @@ import { twMerge as cn } from 'tailwind-merge';
 import { buttonVariants } from '@/components/button';
 import { MessageCircle } from 'lucide-react';
 import { auth } from "@/lib/auth";
+import type { PageTree } from 'fumadocs-core/server';
 
 const docsOptions = {
   ...baseOptions,
@@ -25,8 +26,10 @@ export default async function Layout({
 }) {
   const checkAuth = process.env.AUTHORITY_PROD !== undefined;
   const session = checkAuth ? await auth() : true;
+  const lang = (await params).lang as keyof typeof source.pageTree;
+  const treeData = source.pageTree[lang] as PageTree.Root;
   return (
-    <DocsLayout {...docsOptions} tree={source.pageTree[(await params).lang as keyof typeof source.pageTree]}>
+    <DocsLayout {...docsOptions} tree={treeData}>
       {children}
       <Trigger
         session={!!session}
