@@ -21,7 +21,7 @@ const search = async (query: string) => {
   ).then((response) => response.json());
 };
 
-const createContext = async (question: string, maxLen = 16384) => {
+const createContext = async (question: string, maxLen = 32768) => {
   if (question === "") {
     return "";
   }
@@ -64,7 +64,7 @@ export const POST = ApiWithAuth(async (request: NextRequest) => {
     const { prompt } = await request.json();
     let context = await createContext(prompt);
     context = [`Question: ${prompt}\n`].concat(context);
-    context.push("\n\n---\n\nAnswer:\n\n");
+    //context.push("\n\n---\n\nAnswer:\n\n"); gpt-oss does not understand this one
     return NextResponse.json({ prompt: context }, {status: 200});
   } catch (error) {
     console.error("Error processing request:", error);

@@ -22,6 +22,5 @@ export const baseOptions: BaseLayoutProps = {
   },
   links: [
   ],
-  disableThemeSwitch: true,
   themeSwitch: { enabled: false },
 };
