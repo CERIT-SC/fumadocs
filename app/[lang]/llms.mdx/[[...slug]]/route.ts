@@ -7,10 +7,10 @@ export const revalidate = false;
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ slug?: string[] }> },
+  { params }: { params: Promise<{ lang: string, slug?: string[] }> },
 ) {
-  const { slug } = await params;
-  const page = source.getPage(slug);
+  const { lang, slug } = await params;
+  const page = source.getPage(slug, lang);
   if (!page) notFound();
 
   return new NextResponse(await getLLMText(page));
