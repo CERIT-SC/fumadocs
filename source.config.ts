@@ -18,9 +18,14 @@ import {
 import { remarkAutoTypeTable } from 'fumadocs-typescript';
 import { ElementContent } from 'hast';
 import remarkSmartypants from 'remark-smartypants';
+import lastModified from 'fumadocs-mdx/plugins/last-modified';
 
 export const docs = defineDocs({
   docs: {
+    async: true,
+    postprocess: {
+      extractLinkReferences: true,
+    },
     schema: frontmatterSchema.extend({
       preview: z.string().optional(),
       index: z.boolean().default(false),
@@ -38,11 +43,10 @@ export const docs = defineDocs({
 });
 
 export default defineConfig({
-  lastModifiedTime: 'git',
+  plugins: [lastModified()],
   mdxOptions: {
     rehypeCodeOptions: {
       lazy: true,
-      experimentalJSEngine: true,
       langs: ['ts', 'js', 'html', 'tsx', 'mdx'],
       inline: 'tailing-curly-colon',
       themes: {

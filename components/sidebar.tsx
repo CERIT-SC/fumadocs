@@ -1,14 +1,14 @@
 'use client';
 import { CollapsibleContent } from 'fumadocs-ui/components/ui/collapsible';
 import { buttonVariants } from 'fumadocs-ui/components/ui/button';
-import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger} from 'fumadocs-ui/components/layout/sidebar';
+import { SidebarFolder, SidebarFolderLink, SidebarFolderTrigger} from 'fumadocs-ui/components/sidebar/base';
 import { twMerge as cn } from 'tailwind-merge';
 import { cva } from 'class-variance-authority';
 import Link, { type LinkProps } from 'fumadocs-core/link';
 import { ExternalLink } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { isActive } from '@/lib/is-active';
-import type { PageTree } from 'fumadocs-core/server';
+import type * as PageTree from 'fumadocs-core/page-tree';
 import type { ReactNode } from 'react';
 
 function InternFolder({
@@ -28,9 +28,11 @@ function InternFolder({
           <strong>{item.name}</strong>
         </SidebarFolderLink>
       ) : (
-        <SidebarFolderTrigger>
-          {item.icon}
-          <strong>{item.name}</strong>
+        <SidebarFolderTrigger className='flex w-full items-center justify-between pr-1'>
+          <div className="flex items-center gap-2">
+            {item.icon}
+            <strong>{item.name}</strong>
+          </div>
         </SidebarFolderTrigger>
       )}
       <CollapsibleContent>
@@ -42,13 +44,12 @@ function InternFolder({
 
 export function Folder({
    item, 
-   level, 
    children
 }:{
   item: PageTree.Folder;
-  level: number;
   children: ReactNode;
 }) {
+  const level = 1;
   const nested = level > 1;
   return (
      <>

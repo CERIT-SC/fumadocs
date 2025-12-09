@@ -1,10 +1,11 @@
 import { Feed } from 'feed';
 import { NextResponse } from 'next/server';
 import { source } from '@/lib/source';
+import { notFound } from 'next/navigation';
 
 export const revalidate = false;
 
-export function GET(req: Request) {
+export async function GET(req: Request) {
   const { headers } = req;
   const protocol = headers.get('x-forwarded-proto') || 'http';
   const host = headers.get('host');
@@ -19,9 +20,13 @@ export function GET(req: Request) {
   });
 
   const page = source.getPage(['/en/docs/news'], 'en'); 
+  if (!page) notFound();
+
+  const { lastModified } = await page.data.load();
+
   let time=new Date();
-  if (page && page.data.lastModified) {
-          time = page.data.lastModified ;
+  if (page && lastModified) {
+          time = lastModified ;
   }
 
   feed.addItem({

@@ -17,17 +17,18 @@ export default async function Page(props: {
   const page = source.getPage(params.slug, params.lang);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const { body: MDX, toc, lastModified } = await page.data.load();
+
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full} footer={{enabled: true, component: <Footer/>,}}
+    <DocsPage toc={toc} full={page.data.full} footer={{enabled: true, component: <Footer/>,}}
            tableOfContent={{
              enabled: true,
              style: 'clerk',
              single: false,
              footer: <TocFooter/>,
            }}
-           lastUpdate={page.data.lastModified}
+           lastUpdate={lastModified}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>

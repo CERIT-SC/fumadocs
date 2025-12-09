@@ -1,5 +1,5 @@
 import { i18n } from '@/lib/i18n';
-import { docs } from '@/.source';
+import { docs } from 'fumadocs-mdx:collections/server';
 import { loader } from 'fumadocs-core/source';
 import type { InferMetaType, InferPageType } from 'fumadocs-core/source';
 

@@ -13,6 +13,10 @@ const config = {
 
     return config;
   },
+  outputFileTracingIncludes: {
+    "/api/**/*": ["./node_modules/**/*.wasm"]
+  },
+  serverExternalPackages: ["tiktoken", "onnxruntime-node"],
   async rewrites() {
     return [
       {

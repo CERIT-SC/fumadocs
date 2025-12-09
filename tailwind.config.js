@@ -1,5 +1,4 @@
 // @ts-check
-import { createPreset } from 'fumadocs-ui/tailwind-plugin';
 const defaultTheme = require('tailwindcss/defaultTheme')
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -18,5 +17,4 @@ export default {
       }
     }
   },
-  presets: [createPreset()],
 };
