@@ -28,7 +28,7 @@ function InternFolder({
           <strong>{item.name}</strong>
         </SidebarFolderLink>
       ) : (
-        <SidebarFolderTrigger className='flex w-full items-center justify-between pr-1'>
+        <SidebarFolderTrigger className='flex w-full items-center justify-between pr-1 text-fd-muted-foreground [&_svg]:size-4'>
           <div className="flex items-center gap-2">
             {item.icon}
             <strong>{item.name}</strong>
@@ -49,6 +49,7 @@ export function Folder({
   item: PageTree.Folder;
   children: ReactNode;
 }) {
+  // The level prop was removed from the API
   const level = 1;
   const nested = level > 1;
   return (
