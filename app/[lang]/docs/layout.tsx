@@ -13,6 +13,7 @@ const docsOptions = {
   ...baseOptions,
   sidebar: {
     components: { Folder: Folder, Item: Item },
+    className: '!w-auto',
   },
 };
 
