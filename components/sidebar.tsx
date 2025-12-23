@@ -28,7 +28,7 @@ function InternFolder({
           <strong>{item.name}</strong>
         </SidebarFolderLink>
       ) : (
-        <SidebarFolderTrigger className='flex w-full items-center justify-between p-2 text-fd-muted-foreground [&_svg]:size-4'>
+        <SidebarFolderTrigger className='flex w-full items-center justify-between p-2 text-fd-muted-foreground [&_svg]:size-4 text-start'>
           <div className="flex items-center gap-2">
             {item.icon}
             <strong>{item.name}</strong>
