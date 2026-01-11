@@ -76,8 +76,8 @@ h6 {
    color: rgb(15 23 42) !important;
 }
 
-.prose :where(a:not([data-card])):not(:where([class~="not-prose"],[class~="not-prose"] *))  {
-   color: hsl(189.6 68% 45%) !important;
+.prose {
+  --tw-prose-links: hsl(189.6 68% 45%);
 }
 
 .prose :where(strong):not(:where([class~=not-prose],[class~=not-prose] *)) {
