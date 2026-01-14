@@ -5,9 +5,9 @@ import glob
 import re
 import requests
 from pathlib import Path
-from langchain.text_splitter import MarkdownTextSplitter
+from langchain_text_splitters import MarkdownTextSplitter
 
-chunksize = 1000
+chunksize = 500
 chunkoverlap = 100
 
 def process_meta(base_path, lang, current_dir=""):
