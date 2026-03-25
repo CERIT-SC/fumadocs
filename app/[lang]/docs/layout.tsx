@@ -1,21 +1,13 @@
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import { DocsLayout, DocsLayoutProps } from 'fumadocs-ui/layouts/docs';
 import type { ReactNode } from 'react';
 import { baseOptions } from '@/app/layout.config';
 import { source } from '@/lib/source';
-import { Item, Folder } from '@/components/sidebar';
 import { Trigger } from '@/components/ai/search-ai';
 import { twMerge as cn } from 'tailwind-merge';
 import { buttonVariants } from '@/components/button';
 import { MessageCircle } from 'lucide-react';
 import { auth } from "@/lib/auth";
-
-const docsOptions = {
-  ...baseOptions,
-  sidebar: {
-    components: { Folder: Folder, Item: Item },
-    className: '!w-auto',
-  },
-};
+import './docs.css';
 
 export default async function Layout({
   params,
@@ -28,8 +20,20 @@ export default async function Layout({
   const session = checkAuth ? await auth() : true;
   const lang = (await params).lang as keyof typeof source.pageTree;
   const treeData = source.pageTree[lang];
+  const docsOptions: DocsLayoutProps = {
+    ...baseOptions,
+    tree: treeData,
+    sidebar: {
+      defaultOpenLevel: 1,
+      collapsible: false,
+      style: {
+        background: "transparent"
+      }
+    },
+  };
+
   return (
-    <DocsLayout {...docsOptions} tree={treeData}>
+    <DocsLayout {...docsOptions}>
       {children}
       <Trigger
         session={!!session}
