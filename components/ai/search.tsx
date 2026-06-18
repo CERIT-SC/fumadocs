@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Loader2, MessageCircleIcon, RefreshCw, SearchIcon, Send, X } from 'lucide-react';
+import { Loader2, LogIn, MessageCircleIcon, RefreshCw, SearchIcon, Send, X } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { buttonVariants } from '../ui/button';
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
@@ -19,6 +19,7 @@ import { DefaultChatTransport, type Tool, type UIToolInvocation } from 'ai';
 import { Markdown } from '../markdown';
 import { Presence } from '@radix-ui/react-presence';
 import type { ChatUIMessage, SearchTool } from '../../app/api/chat/route';
+import { useSession, signIn } from 'next-auth/react';
 
 const Context = createContext<{
   open: boolean;
@@ -106,10 +107,13 @@ export function AISearchInputActions() {
 const StorageKeyInput = '__ai_search_input';
 export function AISearchInput(props: ComponentProps<'form'>) {
   const { status, sendMessage, stop } = useChatContext();
+  const { data: session, status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated' && session != null;
   const [input, setInput] = useState(() => localStorage.getItem(StorageKeyInput) ?? '');
   const isLoading = status === 'streaming' || status === 'submitted';
   const onStart = (e?: SyntheticEvent) => {
     e?.preventDefault();
+    if (!isAuthenticated) return;
     const message = input.trim();
     if (message.length === 0) return;
 
@@ -140,10 +144,16 @@ export function AISearchInput(props: ComponentProps<'form'>) {
     <form {...props} className={cn('flex items-start pe-2', props.className)} onSubmit={onStart}>
       <Input
         value={input}
-        placeholder={isLoading ? 'AI is answering...' : 'Ask a question'}
+        placeholder={
+          isLoading
+            ? 'AI is answering...'
+            : isAuthenticated
+              ? 'Ask a question'
+              : 'Sign in to ask a question'
+        }
         autoFocus
         className="p-3"
-        disabled={status === 'streaming' || status === 'submitted'}
+        disabled={!isAuthenticated || status === 'streaming' || status === 'submitted'}
         onChange={(e) => {
           setInput(e.target.value);
           localStorage.setItem(StorageKeyInput, e.target.value);
@@ -179,7 +189,7 @@ export function AISearchInput(props: ComponentProps<'form'>) {
               className: 'transition-all rounded-full mt-2',
             }),
           )}
-          disabled={input.length === 0}
+          disabled={!isAuthenticated || input.length === 0}
         >
           <Send className="size-4" />
         </button>
@@ -406,6 +416,8 @@ export function AISearchPanel() {
 
 export function AISearchPanelList({ className, style, ...props }: ComponentProps<'div'>) {
   const chat = useChatContext();
+  const { data: session, status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated' && session != null;
   const messages = chat.messages.filter((msg) => msg.role !== 'system');
 
   return (
@@ -421,7 +433,29 @@ export function AISearchPanelList({ className, style, ...props }: ComponentProps
       {messages.length === 0 ? (
         <div className="text-sm text-fd-muted-foreground/80 size-full flex flex-col items-center justify-center text-center gap-2">
           <MessageCircleIcon fill="currentColor" stroke="none" />
-          <p onClick={(e) => e.stopPropagation()}>Start a new chat below.</p>
+          {isAuthenticated ? (
+            <p onClick={(e) => e.stopPropagation()}>Start a new chat below.</p>
+          ) : (
+            <div className="flex flex-col items-center gap-3 px-4">
+              <p onClick={(e) => e.stopPropagation()}>
+                Sign in to use the AI assistant.
+              </p>
+              <button
+                type="button"
+                onClick={() => signIn('einfracz')}
+                className={cn(
+                  buttonVariants({
+                    color: 'primary',
+                    size: 'sm',
+                    className: 'rounded-full gap-2',
+                  }),
+                )}
+              >
+                <LogIn className="size-4" />
+                Sign in
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex flex-col px-3 gap-4">

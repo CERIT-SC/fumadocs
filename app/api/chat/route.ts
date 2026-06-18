@@ -3,6 +3,7 @@ import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage }
 import { z } from 'zod';
 import { source } from '@/lib/source';
 import { Document, type DocumentData } from 'flexsearch';
+import { ApiWithAuth } from '@/lib/auth';
 
 interface CustomDocument extends DocumentData {
   url: string;
@@ -61,6 +62,7 @@ async function chunkedAll<O>(promises: Promise<O>[]): Promise<O[]> {
 }
 
 const openrouter = createOpenRouter({
+  baseURL: process.env.OPENROUTER_BASE_URL,
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
@@ -72,7 +74,7 @@ const systemPrompt = [
   'If you cannot find the answer in search results, say you do not know and suggest a better search query.',
 ].join('\n');
 
-export async function POST(req: Request, ctx: RouteContext<"/api/chat">) {
+export const POST = ApiWithAuth(async (req: Request, ctx: RouteContext<"/api/chat">) => {
   const reqJson = await req.json();
 
   const result = streamText({
@@ -97,7 +99,7 @@ export async function POST(req: Request, ctx: RouteContext<"/api/chat">) {
   });
 
   return result.toUIMessageStreamResponse();
-}
+});
 
 export type SearchTool = typeof searchTool;
 
