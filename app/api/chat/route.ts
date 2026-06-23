@@ -62,8 +62,8 @@ async function chunkedAll<O>(promises: Promise<O>[]): Promise<O[]> {
 }
 
 const openrouter = createOpenRouter({
-  baseURL: process.env.OPENROUTER_BASE_URL,
-  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: process.env.LOCAL_URL,
+  apiKey: process.env.LOCAL_API_KEY,
 });
 
 /** System prompt, you can update it to provide more specific information */
@@ -72,19 +72,23 @@ const systemPrompt = [
   'Use the `search` tool to retrieve relevant docs context before answering when needed.',
   'The `search` tool returns raw JSON results from documentation. Use those results to ground your answer and cite sources as markdown links using the document `url` field when available.',
   'If you cannot find the answer in search results, say you do not know and suggest a better search query.',
+  'If the user query is not related to the documentation, do not answer it and politely tell the user that you can only answer questions related to the documentation.',
 ].join('\n');
 
 export const POST = ApiWithAuth(async (req: Request, ctx: RouteContext<"/api/chat">) => {
   const reqJson = await req.json();
 
   const result = streamText({
-    model: openrouter.chat(process.env.OPENROUTER_MODEL ?? 'anthropic/claude-3.5-sonnet'),
+    model: openrouter.chat(process.env.LOCAL_MODEL ?? ""),
     stopWhen: stepCountIs(5),
     tools: {
       search: searchTool,
     },
+    system: {
+      role: 'system',
+      content: systemPrompt
+    },
     messages: [
-      { role: 'system', content: systemPrompt },
       ...(await convertToModelMessages<ChatUIMessage>(reqJson.messages ?? [], {
         convertDataPart(part) {
           if (part.type === 'data-client')

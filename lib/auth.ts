@@ -6,7 +6,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     {
       id: "einfracz",
       name: "e-INFRA CZ",
-      type: "oauth",
+      type: "oidc",
       wellKnown: process.env.AUTHORITY_PROD_CONFIG,
       issuer: process.env.AUTHORITY_PROD,
       authorization: { params: { scope: "openid email profile" } },

@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { TocFooter } from '@/components/ui/toc-footer';
 import { DocsPageProps } from 'fumadocs-ui/page';
-import { Footer } from '@/components/ui/footer';
+import { Footer } from '@/components/footer';
 
 const docsPageProps: DocsPageProps = {
   tableOfContent: {
