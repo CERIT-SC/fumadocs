@@ -11,10 +11,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.0",
     "@ai-sdk/react": "^3.0.142",
     "@openrouter/ai-sdk-provider": "^2.3.3",
     "@radix-ui/react-presence": "^1.1.5",
-    "ai": "^6.0.140",
+    "ai": "^7.0.0",
     "class-variance-authority": "^0.7.1",
     "flexsearch": "^0.8.212",
     "fumadocs-core": "16.10.4",

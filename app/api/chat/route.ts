@@ -1,5 +1,5 @@
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
-import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from 'ai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { convertToModelMessages, createUIMessageStreamResponse, stepCountIs, streamText, tool, toUIMessageStream, type UIMessage } from 'ai';
 import { z } from 'zod';
 import { source } from '@/lib/source';
 import { Document, type DocumentData } from 'flexsearch';
@@ -61,7 +61,7 @@ async function chunkedAll<O>(promises: Promise<O>[]): Promise<O[]> {
   return out;
 }
 
-const openrouter = createOpenRouter({
+const openai = createOpenAI({
   baseURL: process.env.LOCAL_URL,
   apiKey: process.env.LOCAL_API_KEY,
 });
@@ -79,7 +79,7 @@ export const POST = ApiWithAuth(async (req: Request, ctx: RouteContext<"/api/cha
   const reqJson = await req.json();
 
   const result = streamText({
-    model: openrouter.chat(process.env.LOCAL_MODEL ?? ""),
+    model: openai(process.env.LOCAL_MODEL ?? ""),
     stopWhen: stepCountIs(5),
     tools: {
       search: searchTool,
@@ -102,7 +102,9 @@ export const POST = ApiWithAuth(async (req: Request, ctx: RouteContext<"/api/cha
     toolChoice: 'auto',
   });
 
-  return result.toUIMessageStreamResponse();
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
+  });
 });
 
 export type SearchTool = typeof searchTool;
