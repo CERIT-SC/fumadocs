@@ -1,5 +1,5 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { convertToModelMessages, createUIMessageStreamResponse, stepCountIs, streamText, tool, toUIMessageStream, type UIMessage } from 'ai';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, stepCountIs, streamText, tool, toUIMessageStream, UIDataTypes, UITools, type UIMessage } from 'ai';
 import { z } from 'zod';
 import { source } from '@/lib/source';
 import { Document, type DocumentData } from 'flexsearch';
@@ -12,14 +12,13 @@ interface CustomDocument extends DocumentData {
   content: string;
 }
 
-export type ChatUIMessage = UIMessage<
-  never,
-  {
-    client: {
-      location: string;
-    };
+type MyDataPart = {
+  client: {
+    location: string
   }
->;
+}
+
+export type ChatUIMessage = UIMessage<undefined, MyDataPart, UITools>;
 
 const searchServer = createSearchServer();
 
@@ -61,9 +60,10 @@ async function chunkedAll<O>(promises: Promise<O>[]): Promise<O[]> {
   return out;
 }
 
-const openai = createOpenAI({
-  baseURL: process.env.LOCAL_URL,
+const openai = createOpenAICompatible({
+  baseURL: process.env.LOCAL_URL || "",
   apiKey: process.env.LOCAL_API_KEY,
+  name: "openaiCompatible",
 });
 
 /** System prompt, you can update it to provide more specific information */
@@ -78,33 +78,37 @@ const systemPrompt = [
 export const POST = ApiWithAuth(async (req: Request, ctx: RouteContext<"/api/chat">) => {
   const reqJson = await req.json();
 
-  const result = streamText({
-    model: openai(process.env.LOCAL_MODEL ?? ""),
-    stopWhen: stepCountIs(5),
-    tools: {
-      search: searchTool,
-    },
-    system: {
-      role: 'system',
-      content: systemPrompt
-    },
-    messages: [
-      ...(await convertToModelMessages<ChatUIMessage>(reqJson.messages ?? [], {
-        convertDataPart(part) {
-          if (part.type === 'data-client')
-            return {
-              type: 'text',
-              text: `[Client Context: ${JSON.stringify(part.data)}]`,
-            };
+  const stream =  createUIMessageStream({
+    execute: async ({ writer }) => {
+      const result = streamText({
+        model: openai.chatModel(process.env.LOCAL_MODEL ?? ""),
+        stopWhen: stepCountIs(5),
+        tools: {
+          search: searchTool,
         },
-      })),
-    ],
-    toolChoice: 'auto',
-  });
+        system: {
+          role: 'system',
+          content: systemPrompt
+        },
+        messages: [
+          ...(await convertToModelMessages<ChatUIMessage>(reqJson.messages ?? [], {
+            convertDataPart(part) {
+              if (part.type === 'data-client')
+                return {
+                  type: 'text',
+                  text: `[Client Context: ${JSON.stringify(part.data)}]`,
+                };
+            },
+          })),
+        ],
+        toolChoice: 'auto',
+      });
 
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({ stream: result.stream }),
-  });
+      writer.merge(toUIMessageStream({ stream: result.stream }));
+    }
+  })
+
+  return createUIMessageStreamResponse({ stream });
 });
 
 export type SearchTool = typeof searchTool;
