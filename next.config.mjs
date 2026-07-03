@@ -10,7 +10,17 @@ const config = {
       {
         source: '/',
         destination: process.env.STARTPAGE,
-        permanent: false,
+        permanent: true,
+      },
+      {
+        source: '/:lang/docs',
+        destination: process.env.STARTPAGE,
+        permanent: true,
+      },
+      {
+        source: '/:lang',
+        destination: process.env.STARTPAGE,
+        permanent: true,
       }
     ];
   },
