@@ -1,48 +1,42 @@
-import './global.css';
-import { RootProvider } from 'fumadocs-ui/provider/next';
-import type { ReactNode } from 'react';
-import { defineI18nUI } from 'fumadocs-ui/i18n';
-import { i18n } from '@/lib/i18n';
+import { i18nUI } from '@/lib/layout.shared';
 
-const { provider } = defineI18nUI(i18n, {
-  //const includeCzech = process.env.NEXT_PUBLIC_CZECH === 'true';
-  translations: {
-    en: {
-      displayName: 'English',
-    },
-    cz: {
-      displayName: 'Česky',
-      toc: 'Obsah',
-      search: 'Hledat',
-      lastUpdate: 'Poslední změna',
-      searchNoResult: 'Žádný výsledek',
-      tocNoHeadings: 'Bez nadpisů',
-      previousPage: 'Předchozí',
-      nextPage: 'Následující',
-      chooseLanguage: 'Jazyk'    
-    },
-  },
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import { SessionProvider } from 'next-auth/react';
+import './global.css';
+import { Inter } from 'next/font/google';
+
+import { baseUrl, createMetadata } from '@/lib/metadata';
+
+const inter = Inter({
+  subsets: ['latin'],
 });
 
-export default async function Layout({ 
+export const metadata = createMetadata({
+  title: {
+    template: '%s',
+    default: 'e-INFRA CZ',
+  },
+  description: 'e-INFRA CZ documentation framework.',
+  metadataBase: baseUrl,
+});
+
+export default async function Layout({
   params,
   children,
 }: {
   params: Promise<{ lang: string }>;
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
-  const { lang } = await params;
+  const lang = (await params).lang;
+
   return (
-    <html lang={lang} suppressHydrationWarning>
+    <html lang={lang} className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <RootProvider
-           theme={{
-             enabled: false,
-           }}
-           i18n={provider(lang)}
-        >
-           {children}
-        </RootProvider>
+        <SessionProvider>
+          <RootProvider i18n={i18nUI.provider(lang)} theme={{ enableSystem: false, enabled: false }}>
+            {children}
+          </RootProvider>
+        </SessionProvider>
       </body>
     </html>
   );

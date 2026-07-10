@@ -1,0 +1,26 @@
+diff --git a/dist/index.js b/dist/index.js
+index c513795f038a197ef05e256224ba39483d40df77..1ac04c58215f5e1f4dda19539ea0b158db42c6a5 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -748,7 +748,7 @@ var OpenAICompatibleChatLanguageModel = class _OpenAICompatibleChatLanguageModel
+         pending.bufferedArguments += argumentsDelta;
+       }
+       const name = (_d = toolCallDelta.function) == null ? void 0 : _d.name;
+-      if (name != null) {
++      if (name != null && name.length > 0) {
+         const forwardDelta = {
+           index,
+           id: pending.id,
+diff --git a/src/chat/openai-compatible-chat-language-model.ts b/src/chat/openai-compatible-chat-language-model.ts
+index bb7bbfdcaea3189b55ab7ab22c7fa1bc2042e643..df4718eb1d1181e5ddc9587a4259c66ccb0aac9d 100644
+--- a/src/chat/openai-compatible-chat-language-model.ts
++++ b/src/chat/openai-compatible-chat-language-model.ts
+@@ -507,7 +507,7 @@ export class OpenAICompatibleChatLanguageModel implements LanguageModelV4 {
+       }
+ 
+       const name = toolCallDelta.function?.name;
+-      if (name != null) {
++      if (name != null && name.length > 0) {
+         const forwardDelta: OpenAICompatibleStreamingToolCallDelta = {
+           index,
+           id: pending.id,

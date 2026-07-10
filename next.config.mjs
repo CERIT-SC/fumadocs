@@ -5,37 +5,22 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  webpack(config, { isServer, dev }) {
-    config.experiments = {
-      asyncWebAssembly: true,
-      layers: true,
-    };
-
-    return config;
-  },
-  outputFileTracingIncludes: {
-    "/api/**/*": ["./node_modules/**/*.wasm"]
-  },
-  serverExternalPackages: ["tiktoken", "onnxruntime-node"],
-  async rewrites() {
-    return [
-      {
-        source: '/:lang/docs/:path*.mdx',
-        destination: '/:lang/llms.mdx/:path*',
-      },
-    ];
-  },
   async redirects() {
     return [
       {
         source: '/',
         destination: process.env.STARTPAGE,
-        permanent: false,
+        permanent: true,
       },
       {
-        source: '/en/platform/overview',
+        source: '/:lang/docs',
         destination: process.env.STARTPAGE,
-        permanent: false,
+        permanent: true,
+      },
+      {
+        source: '/:lang',
+        destination: process.env.STARTPAGE,
+        permanent: true,
       }
     ];
   },

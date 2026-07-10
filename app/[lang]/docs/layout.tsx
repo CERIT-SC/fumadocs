@@ -1,28 +1,17 @@
-import { DocsLayout, DocsLayoutProps } from 'fumadocs-ui/layouts/docs';
-import type { ReactNode } from 'react';
-import { baseOptions } from '@/app/layout.config';
 import { source } from '@/lib/source';
-import { Trigger } from '@/components/ai/search-ai';
-import { twMerge as cn } from 'tailwind-merge';
-import { buttonVariants } from '@/components/button';
-import { MessageCircle } from 'lucide-react';
-import { auth } from "@/lib/auth";
-import './docs.css';
+import { DocsLayout, DocsLayoutProps } from 'fumadocs-ui/layouts/docs';
+import { baseOptions } from '@/lib/layout.shared';
+import { AISearch, AISearchPanel, AISearchTrigger } from '@/components/ai/search';
+import { MessageCircleIcon } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import { buttonVariants } from 'fumadocs-ui/components/ui/button';
+import './docs.css'
 
-export default async function Layout({
-  params,
-  children,
-}: {
-  params: Promise<{ lang: string }>;
-  children: ReactNode;
-}) {
-  const checkAuth = process.env.AUTHORITY_PROD !== undefined;
-  const session = checkAuth ? await auth() : true;
-  const lang = (await params).lang as keyof typeof source.pageTree;
-  const treeData = source.pageTree[lang];
-  const docsOptions: DocsLayoutProps = {
-    ...baseOptions,
-    tree: treeData,
+export default async function Layout({ params, children }: LayoutProps<'/[lang]/docs'>) {
+  const { lang } = await params;
+
+  const docsLayoutOptions: DocsLayoutProps = {
+    tree: source.getPageTree(lang),
     sidebar: {
       defaultOpenLevel: 1,
       collapsible: false,
@@ -30,24 +19,29 @@ export default async function Layout({
         background: "transparent"
       }
     },
-  };
+    themeSwitch: { enabled: false }
+  }
 
   return (
-    <DocsLayout {...docsOptions}>
+    <DocsLayout {...baseOptions} {...docsLayoutOptions}>
+      <AISearch>
+        <AISearchPanel />
+        <AISearchTrigger
+          position="float"
+          className={cn(
+            buttonVariants({
+              variant: 'secondary',
+              className: 'text-fd-muted-foreground rounded-2xl',
+            }),
+          )}
+        >
+          <MessageCircleIcon className="size-4.5" />
+          Ask AI
+        </AISearchTrigger>
+      </AISearch>
+
+
       {children}
-      <Trigger
-        session={!!session}
-        className={cn(
-          buttonVariants({
-            variant: 'secondary',
-          }),
-          'fixed bottom-4 right-4 z-10 gap-2 rounded-xl text-fd-secondary-foreground/80 shadow-lg backdrop-blur-lg md:bottom-8 md:right-8',
-          'bg-fd-secondary', 'ring-1', 'ring-[#24a9c2]'
-        )}
-      >
-        <MessageCircle className="size-4" />
-        { session ? "Ask GPT AI" : "Sign in to Ask GPT AI" }
-      </Trigger>
     </DocsLayout>
   );
 }

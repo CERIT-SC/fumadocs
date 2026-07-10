@@ -1,41 +1,57 @@
-import { source } from '@/lib/source';
-import { TocFooter } from '@/components/toc';
+import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
 import {
-  DocsPage,
   DocsBody,
   DocsDescription,
+  DocsPage,
   DocsTitle,
-} from 'fumadocs-ui/page';
+  MarkdownCopyButton,
+  PageLastUpdate,
+} from 'fumadocs-ui/layouts/docs/page';
 import { notFound } from 'next/navigation';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
+import { getMDXComponents } from '@/components/mdx';
+import type { Metadata } from 'next';
+import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { TocFooter } from '@/components/ui/toc-footer';
+import { DocsPageProps } from 'fumadocs-ui/page';
 import { Footer } from '@/components/footer';
 
-export default async function Page(props: {
-  params: Promise<{ lang: string; slug?: string[] }>;
-}) {
+const docsPageProps: DocsPageProps = {
+  tableOfContent: {
+    style: "clerk",
+    single: false,
+    footer: <TocFooter />
+  },
+  footer: {
+    enabled: true,
+    component: <Footer />
+  }
+}
+
+export default async function Page(props: PageProps<'/[lang]/docs/[[...slug]]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug, params.lang);
   if (!page) notFound();
 
-  const { body: MDX, toc, lastModified } = await page.data.load();
-
+  const MDX = page.data.body;
+  const lastModifiedTime = page.data.lastModified
+  const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
-    <DocsPage toc={toc} full={page.data.full} footer={{enabled: true, component: <Footer/>,}}
-           tableOfContent={{
-             enabled: true,
-             style: 'clerk',
-             single: false,
-             footer: <TocFooter/>,
-           }}
-           lastUpdate={lastModified}
-    >
+    <>
+    <DocsPage toc={page.data.toc} full={page.data.full} {...docsPageProps}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDX components={{ ...defaultMdxComponents }} />
+        <MDX
+          components={getMDXComponents({
+            // this allows you to link to other pages with relative file paths
+            a: createRelativeLink(source, page),
+          })}
+        />
       </DocsBody>
+      {lastModifiedTime && <PageLastUpdate date={lastModifiedTime} />}
     </DocsPage>
+    </>
   );
 }
 
@@ -43,9 +59,7 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(props: {
-  params: Promise<{ lang: string; slug?: string[] }>;
-}) {
+export async function generateMetadata(props: PageProps<'/[lang]/docs/[[...slug]]'>): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug, params.lang);
   if (!page) notFound();
@@ -53,5 +67,8 @@ export async function generateMetadata(props: {
   return {
     title: page.data.title,
     description: page.data.description,
+    openGraph: {
+      images: getPageImage(page).url,
+    },
   };
 }
