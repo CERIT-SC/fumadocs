@@ -14,10 +14,13 @@ export const source = loader({
 
 export function getPageImage(page: InferPageType<typeof source>) {
   const segments = [...page.slugs, 'image.png'];
+  const lang = page.locale ?? i18n.defaultLanguage;
 
   return {
     segments,
-    url: `${docsImageRoute}/${segments.join('/')}`,
+    // the handler lives under `app/[lang]`, so the locale has to be in the URL:
+    // without it the i18n middleware would redirect crawlers to the default one
+    url: `/${lang}${docsImageRoute}/${segments.join('/')}`,
   };
 }
 

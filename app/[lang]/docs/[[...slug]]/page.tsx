@@ -68,7 +68,15 @@ export async function generateMetadata(props: PageProps<'/[lang]/docs/[[...slug]
     title: page.data.title,
     description: page.data.description,
     openGraph: {
-      images: getPageImage(page).url,
+      // Next derives the twitter:* tags from these when `twitter` is unset
+      images: [
+        {
+          url: getPageImage(page).url,
+          width: 1200,
+          height: 630,
+          alt: page.data.title,
+        },
+      ],
     },
   };
 }

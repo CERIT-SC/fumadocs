@@ -23,7 +23,7 @@ export default async function Layout({ params, children }: LayoutProps<'/[lang]/
   }
 
   return (
-    <DocsLayout {...baseOptions} {...docsLayoutOptions}>
+    <DocsLayout {...baseOptions()} {...docsLayoutOptions}>
       <AISearch>
         <AISearchPanel />
         <AISearchTrigger

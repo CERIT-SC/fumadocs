@@ -2,7 +2,7 @@ diff --git a/dist/index.js b/dist/index.js
 index c513795f038a197ef05e256224ba39483d40df77..1ac04c58215f5e1f4dda19539ea0b158db42c6a5 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -748,7 +748,7 @@ var OpenAICompatibleChatLanguageModel = class _OpenAICompatibleChatLanguageModel
+@@ -726,7 +726,7 @@ var OpenAICompatibleChatLanguageModel = class _OpenAICompatibleChatLanguageModel
          pending.bufferedArguments += argumentsDelta;
        }
        const name = (_d = toolCallDelta.function) == null ? void 0 : _d.name;
