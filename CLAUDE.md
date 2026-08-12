@@ -1,4 +1,4 @@
 When updating, remove package.json.1, download: https://raw.githubusercontent.com/fuma-nama/fumadocs/refs/heads/dev/apps/docs/package.json into package.json.1
-update packages in package.json according to version from the package.json.1, for fumadocs packages, use npmjs server to query latest version, they are not inlined.
+update packages in package.json according to version from the package.json.1, for fumadocs packages, use npmjs server to query latest version, they are not inlined. Bump only versions, do not add new packages from the package.json.1 to package.json.
 
 Special care should be taken to pnpm-workspace.yaml that references @ai-sdk/openai-compatible package including version. On version bump, the pnpm-workspace.yaml shall be updated including filename in the patches directory so that it fits. Also note, that the pnpm-workspace.yaml references maturity of the @ai-sdk/openai-compatible packages, so the latest version may not be the installed version because of minimumReleaseAge: 1440 condition.
