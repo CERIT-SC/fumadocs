@@ -3,5 +3,11 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - fumadocs-core
+  - fumadocs-ui
+  - fumadocs-mdx
+  - eslint-config-next
+  - '@next/eslint-plugin-next'
 patchedDependencies:
-  '@ai-sdk/openai-compatible@3.0.29': patches/@ai-sdk__openai-compatible@3.0.29.patch
+  '@ai-sdk/openai-compatible@3.0.75': patches/@ai-sdk__openai-compatible@3.0.75.patch
