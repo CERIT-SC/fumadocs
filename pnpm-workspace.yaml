@@ -10,4 +10,4 @@ minimumReleaseAgeExclude:
   - eslint-config-next
   - '@next/eslint-plugin-next'
 patchedDependencies:
-  '@ai-sdk/openai-compatible@3.0.75': patches/@ai-sdk__openai-compatible@3.0.75.patch
+  '@ai-sdk/openai-compatible@3.0.90': patches/@ai-sdk__openai-compatible@3.0.90.patch
